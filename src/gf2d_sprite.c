@@ -28,6 +28,8 @@ void gf2d_sprite_close()
     slog("sprite system closed");
 }
 
+static SpriteManager sprite_manager = { 0 };
+
 void gf2d_sprite_init(Uint32 max)
 {
     if (!max)

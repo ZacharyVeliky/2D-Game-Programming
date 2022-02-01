@@ -1,7 +1,9 @@
 #include <SDL.h>
+
+#include "simple_logger.h"
+
 #include "gf2d_graphics.h"
 #include "gf2d_sprite.h"
-#include "simple_logger.h"
 
 int main(int argc, char * argv[])
 {
@@ -9,11 +11,14 @@ int main(int argc, char * argv[])
     int done = 0;
     const Uint8 * keys;
     Sprite *sprite;
+    Sprite *randomSprite;
     
     int mx,my;
+    Bool m1 = false, m2 = false;
     float mf = 0;
     Sprite *mouse;
     Vector4D mouseColor = {255,100,255,200};
+    Vector4D noChange = {255,0,0,0};
     
     /*program initializtion*/
     init_logger("gf2d.log");
@@ -33,6 +38,7 @@ int main(int argc, char * argv[])
     /*demo setup*/
     sprite = gf2d_sprite_load_image("images/backgrounds/bg_flat.png");
     mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16);
+    randomSprite = gf2d_sprite_load_image("images/vodka_spi2.png");
     /*main game loop*/
     while(!done)
     {
@@ -59,10 +65,22 @@ int main(int argc, char * argv[])
                 NULL,
                 &mouseColor,
                 (int)mf);
+
+            gf2d_sprite_draw_image(
+                randomSprite,
+                vector2d(mx+32,my+32),
+                NULL,//vector2d* ()
+                NULL,
+                NULL,
+                NULL,
+                &noChange,
+                (int)mf);
         gf2d_grahics_next_frame();// render current draw frame and skip to the next frame
         
         if (keys[SDL_SCANCODE_ESCAPE])done = 1; // exit condition
-        slog("Rendering at %f FPS",gf2d_graphics_get_frames_per_second());
+            slog("Rendering at %f FPS",gf2d_graphics_get_frames_per_second());
+        if (SDL_GetMouseState(NULL,NULL)& SDL_BUTTON_LEFT)
+            slog("mouse key press");
     }
     slog("---==== END ====---");
     return 0;
