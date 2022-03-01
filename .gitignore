@@ -58,3 +58,6 @@ gf2d
 *.log
 
 makefile.dep
+
+2D-Game-Programming/.vs
+2D-Game-Programming/Debug
