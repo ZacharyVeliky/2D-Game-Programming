@@ -173,10 +173,12 @@
     <ClInclude Include="..\gfc\simple_logger\include\simple_logger.h" />
     <ClInclude Include="..\include\bug_ent.h" />
     <ClInclude Include="..\include\collision.h" />
+    <ClInclude Include="..\include\collision_ent.h" />
     <ClInclude Include="..\include\entity.h" />
     <ClInclude Include="..\include\gf2d_draw.h" />
     <ClInclude Include="..\include\gf2d_graphics.h" />
     <ClInclude Include="..\include\gf2d_sprite.h" />
+    <ClInclude Include="..\include\player_ent.h" />
     <ClInclude Include="..\include\resource.h" />
     <ClInclude Include="..\include\tile_set.h" />
     <ClInclude Include="..\include\tile_map.h" />
@@ -205,11 +207,13 @@
     <ClCompile Include="..\gfc\src\gfc_vector.c" />
     <ClCompile Include="..\src\bug_ent.c" />
     <ClCompile Include="..\src\collision.c" />
+    <ClCompile Include="..\src\collision_ent.c" />
     <ClCompile Include="..\src\entity.c" />
     <ClCompile Include="..\src\game.c" />
     <ClCompile Include="..\src\gf2d_draw.c" />
     <ClCompile Include="..\src\gf2d_graphics.c" />
     <ClCompile Include="..\src\gf2d_sprite.c" />
+    <ClCompile Include="..\src\player_ent.c" />
     <ClCompile Include="..\src\tile_map.c" />
     <ClCompile Include="..\src\tile_set.c" />
   </ItemGroup>

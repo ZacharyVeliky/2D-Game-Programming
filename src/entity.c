@@ -5,7 +5,7 @@
 #include "entity.h"
 #include "SDL_rect.h"
 #include "../include/collision.h"
-
+#include "../include/tile_map.h"
 
 typedef struct
 {
@@ -97,9 +97,11 @@ void entity_manager_think_all()
 
 void entity_update(Entity* ent)
 {
+
     Vector2D newPosition;
     Rect collide;
     if(!ent) return;
+    //if (SDL_HasIntersection(&rect, &rect2)) {    }
     vector2d_add(newPosition, ent->position, ent->velocity);
     int i;
     for (i = 0;i < entity_manager.max_entities;i++)
@@ -107,6 +109,7 @@ void entity_update(Entity* ent)
         if (!entity_manager.entity_list[i]._inuse)continue;
         entity_update(&entity_manager.entity_list[i]);
     }
+    
 }
 
 
@@ -163,15 +166,18 @@ void entity_draw(Entity *entity)
         NULL,
         NULL,
         (Uint32)entity->frame);
+
     SDL_Rect rect;
-    rect.x = entity->position.x;
-    rect.y = entity->position.y;
-    Vector4D test;
-    test.x = 255;
-    test.y = 255;
-    test.z = 255;
-    test.w = 255;
-    gf2d_draw_rect(rect, test);
+    rect.x = entity->position.x-20;
+    rect.y = entity->position.y-20;
+    rect.w = 40;
+    rect.h = 40;
+    Vector4D rectBoxColor;
+    rectBoxColor.x = 255;
+    rectBoxColor.y = 255;
+    rectBoxColor.z = 255;
+    rectBoxColor.w = 255;
+    gf2d_draw_rect(rect, rectBoxColor);
 }
 
 void entity_free(Entity *entity)

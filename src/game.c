@@ -7,6 +7,9 @@
 
 #include "entity.h"
 #include "bug_ent.h"
+#include "player_ent.h"
+#include "collision_ent.h"
+
 #include "tile_map.h"
 
 int main(int argc, char * argv[])
@@ -42,7 +45,9 @@ int main(int argc, char * argv[])
     /*demo setup*/
     sprite = gf2d_sprite_load_image("images/backgrounds/bg_flat.png");
     mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16);
-    bug_ent_new(vector2d(500,300));
+    //bug_ent_new(vector2d(500,300));
+    player_ent_new(vector2d(500,300));
+    collision_ent_new(vector2d(700, 300));
     tilemap = tilemap_load("levels/testlevel.json");
 
     /*main game loop*/

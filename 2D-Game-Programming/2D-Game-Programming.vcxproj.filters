@@ -108,6 +108,12 @@
     <ClInclude Include="..\include\collision.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\player_ent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\collision_ent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="2D-Game-Programming.rc">
@@ -188,6 +194,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\collision.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\player_ent.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\collision_ent.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

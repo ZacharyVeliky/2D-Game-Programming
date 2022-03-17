@@ -1,5 +1,5 @@
 #include "simple_logger.h"
-
+#include "gfc_vector.h"
 #include "simple_json.h"
 #include "tile_map.h"
 

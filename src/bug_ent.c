@@ -34,7 +34,6 @@ void bug_think(Entity *self)
             vector2d_clear(self->velocity);
         }
     }
-
 }
 
 void bug_update(Entity* self) {
