@@ -9,5 +9,6 @@
  * @returns NULL on error, or a pointer to the bug
  */
 Entity* collision_ent_new(Vector2D position);
+Entity* get_col_ent();
 
 #endif

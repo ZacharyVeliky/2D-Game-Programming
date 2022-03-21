@@ -15,9 +15,9 @@ typedef struct ENTITY_S
     Vector2D    position;   /**<where our entity lives*/
     Vector2D    velocity;   /**<how our entity moves*/
     Vector3D    rotation;   /**<how to rotate the sprite*/
-    Vector2D    draw_scale;  /**<the scale factor for drawing the sprite*/
+    Vector2D    draw_scale; /**<the scale factor for drawing the sprite*/
     Vector2D    mins,maxs;  /**<describe the bounding box around this entity*/
-    Rect        bounds;
+    SDL_Rect    bounds;     /**<More bounds*/
     void (*think)(struct ENTITY_S *self);   /**<a pointer to a think function for this entity*/
     void (*update)(struct ENTITY_S *self);   /**<a pointer to a think function for this entity*/
 }Entity;
@@ -39,6 +39,18 @@ void entity_manager_draw_all();
  * @brief runs any think function for all active entities
  */
 void entity_manager_think_all();
+
+
+/**
+ * @brief runs any think function for all active entities
+ */
+void entity_update(Entity* ent);
+
+
+/**
+ * @brief runs any think function for all active entities
+ */
+void entity_manager_update_all();
 
 
 /**

@@ -38,7 +38,7 @@ void bug_think(Entity *self)
 
 void bug_update(Entity* self) {
     if (!self)return;
-    entity_update(self);
+    //entity_update(self);
 }
 
 Entity *bug_ent_new(Vector2D position)

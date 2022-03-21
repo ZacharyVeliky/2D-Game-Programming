@@ -82,7 +82,7 @@ void entity_think(Entity *ent)
         ent->think(ent);
     }
     
-    vector2d_add(ent->position,ent->position,ent->velocity);
+    //vector2d_add(ent->position,ent->position,ent->velocity);
 }
 
 void entity_manager_think_all()
@@ -97,35 +97,15 @@ void entity_manager_think_all()
 
 void entity_update(Entity* ent)
 {
+    if (!ent)return;
+    //generic upkeep
 
-    Vector2D newPosition;
-    Rect collide;
-    if(!ent) return;
-    //if (SDL_HasIntersection(&rect, &rect2)) {    }
-    vector2d_add(newPosition, ent->position, ent->velocity);
-    int i;
-    for (i = 0;i < entity_manager.max_entities;i++)
+    if (ent->update)
     {
-        if (!entity_manager.entity_list[i]._inuse)continue;
-        entity_update(&entity_manager.entity_list[i]);
+        ent->update(ent);
     }
-    
 }
 
-
-//void entity_update(Entity* ent)
-//{
-//    if (!ent)return;
-//    //generic upkeep
-//    if (!entity_manager.entity_list[1]._inuse)continue;
-//
-//    if (ent->update)
-//        {
-//            ent->update(ent);
-//        }
-//
-//    vector2d_add(ent->position, ent->position, ent->velocity);
-//}
 
 void entity_manager_update_all()
 {

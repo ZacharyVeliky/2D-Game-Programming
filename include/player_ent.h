@@ -9,6 +9,5 @@
  * @returns NULL on error, or a pointer to the bug
  */
 Entity* player_ent_new(Vector2D position);
-Entity* get_col_ent();
-
+float player_health_math();
 #endif
