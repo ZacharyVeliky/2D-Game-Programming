@@ -28,6 +28,7 @@ int main(int argc, char * argv[])
     Sprite* health_background;
     Sprite* health;
     Vector2D health_scale = { 0.2,0.2 };
+    Vector2D current_health_scale = { 0.2,0.2 };
     int currnet_player_health;
     
     /*program initializtion*/
@@ -64,7 +65,8 @@ int main(int argc, char * argv[])
     /*main game loop*/
     while(!done)
     {
-        currnet_player_health = get_player_health_max();
+        currnet_player_health = player_health_math();
+        current_health_scale.y = current_health_scale.y * currnet_player_health;
         SDL_PumpEvents();   // update SDL's internal event structures
         keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
         /*update things here*/
@@ -93,8 +95,8 @@ int main(int argc, char * argv[])
                 NULL);
             gf2d_sprite_draw(
                 health,
-                vector2d(11.9, 11.9*currnet_player_health),
-                &health_scale,
+                vector2d(11.9, 11.9),
+                &current_health_scale,
                 NULL,
                 NULL,
                 NULL,

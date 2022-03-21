@@ -1,4 +1,5 @@
 #include "simple_logger.h"
+#include "time.h"
 #include "player_ent.h"
 #include "gfc_vector.h"
 #include "../include/gf2d_draw.h"
@@ -11,14 +12,19 @@ SDL_Rect rect;
 
 int player_health = 3;
 int player_health_upgrade = 0;
-int player_health_max;
 int player_health_current = 3;
 
+float last_time;
+time_t current_time = time(NULL);
+
 float player_health_math() {
-    float ret = player_health_current / player_health_max;
+    float ret = player_health / player_health_current;
     return ret;
 }
 
+void player_damage(int damage) {
+    player_health_current -= damage;
+}
 
 void player_think(Entity* self)
 {
@@ -75,6 +81,10 @@ void player_think(Entity* self)
         {
             vector2d_clear(self->velocity);
         }
+    }
+    if (keys[SDL_SCANCODE_K]) {
+        if (time >= last_time + 100)
+        player_damage(1);
     }
 }
 
