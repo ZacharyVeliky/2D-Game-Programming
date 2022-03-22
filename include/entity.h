@@ -15,9 +15,12 @@ typedef struct ENTITY_S
     Vector2D    position;   /**<where our entity lives*/
     Vector2D    velocity;   /**<how our entity moves*/
     Vector3D    rotation;   /**<how to rotate the sprite*/
-    Vector2D    draw_scale; /**<the scale factor for drawing the sprite*/
+    Vector2D    draw_scale; /**<the scale factor for drawing the sprite*/ 
     Vector2D    mins,maxs;  /**<describe the bounding box around this entity*/
     SDL_Rect    bounds;     /**<More bounds*/
+    int         direction;     /**<More bounds*/
+    int         health; //maybe the entity has health
+    int         current_health; //maybe the entity has health
     void (*think)(struct ENTITY_S *self);   /**<a pointer to a think function for this entity*/
     void (*update)(struct ENTITY_S *self);   /**<a pointer to a think function for this entity*/
 }Entity;

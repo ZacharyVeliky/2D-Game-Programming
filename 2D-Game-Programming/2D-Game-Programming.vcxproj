@@ -96,6 +96,8 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>C:\Users\zacha\git\2D-Game-Programming\gfc\simple_json\include;C:\Users\zacha\git\2D-Game-Programming\gfc\simple_logger\include;C:\Users\zacha\git\2D-Game-Programming\gfc\include;C:\Users\zacha\git\libs\SDL2-2.0.20\include;C:\Users\zacha\git\libs\SDL2_ttf-2.0.18\include;C:\Users\zacha\git\libs\SDL2_mixer-2.0.4\include;C:\Users\zacha\git\libs\SDL2_image-2.0.5;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>
+      </DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -113,6 +115,8 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>C:\Users\zacha\git\2D-Game-Programming\gfc\simple_json\include;C:\Users\zacha\git\2D-Game-Programming\gfc\simple_logger\include;C:\Users\zacha\git\2D-Game-Programming\gfc\include;C:\Users\zacha\git\libs\SDL2-2.0.20\include;C:\Users\zacha\git\libs\SDL2_ttf-2.0.18\include;C:\Users\zacha\git\libs\SDL2_mixer-2.0.4\include;C:\Users\zacha\git\libs\SDL2_image-2.0.5;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>
+      </DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -174,7 +178,7 @@
     <ClInclude Include="..\include\bug_ent.h" />
     <ClInclude Include="..\include\collision.h" />
     <ClInclude Include="..\include\collision_ent.h" />
-    <ClInclude Include="..\include\entity.h" />
+    <ClInclude Include="..\include\energy_attack.h" />
     <ClInclude Include="..\include\gf2d_draw.h" />
     <ClInclude Include="..\include\gf2d_graphics.h" />
     <ClInclude Include="..\include\gf2d_sprite.h" />
@@ -182,8 +186,7 @@
     <ClInclude Include="..\include\resource.h" />
     <ClInclude Include="..\include\tile_set.h" />
     <ClInclude Include="..\include\tile_map.h" />
-    <ClInclude Include="entity.h" />
-    <ClInclude Include="Header.h" />
+    <ClInclude Include="..\include\univ.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="2D-Game-Programming.rc" />
@@ -208,6 +211,7 @@
     <ClCompile Include="..\src\bug_ent.c" />
     <ClCompile Include="..\src\collision.c" />
     <ClCompile Include="..\src\collision_ent.c" />
+    <ClCompile Include="..\src\energy_attack.c" />
     <ClCompile Include="..\src\entity.c" />
     <ClCompile Include="..\src\game.c" />
     <ClCompile Include="..\src\gf2d_draw.c" />

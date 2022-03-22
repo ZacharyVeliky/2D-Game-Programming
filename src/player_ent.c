@@ -4,26 +4,45 @@
 #include "gfc_vector.h"
 #include "../include/gf2d_draw.h"
 #include "collision_ent.h"
+#include "../include/energy_attack.h"
+#include "simple_json.h"
 
+#include "stdio.h"
+
+SJson* json;
 
 float angle = -90;
 float grav = -9.8;
 SDL_Rect rect;
 
-int player_health = 3;
-int player_health_upgrade = 0;
+Vector2D player_position;
+
+int player_health;
 int player_health_current = 3;
 
-float last_time;
-time_t current_time = time(NULL);
+Bool has_energy_attack;
+
+time_t last_time;
 
 float player_health_math() {
-    float ret = player_health / player_health_current;
+    float ret = player_health_current + player_health;
     return ret;
 }
 
 void player_damage(int damage) {
-    player_health_current -= damage;
+    if (player_health_current >= 1)
+        player_health_current -= damage;
+    else
+        slog("You Died");
+}
+
+void player_attack(atkNum) {
+    switch (atkNum)
+    {
+    case 1: energy_attack(player_position, angle);
+    default:
+        break;
+    }
 }
 
 void player_think(Entity* self)
@@ -83,8 +102,13 @@ void player_think(Entity* self)
         }
     }
     if (keys[SDL_SCANCODE_K]) {
-        if (time >= last_time + 100)
-        player_damage(1);
+        if (time(0) >= last_time + 1) {
+            player_damage(1);
+            last_time = time;
+        }
+    }
+    if (keys[SDL_SCANCODE_SPACE]) {
+        player_attack(1);
     }
 }
 
@@ -105,11 +129,12 @@ void player_update(Entity* self) {
     boxColor.w = 255;
     gf2d_draw_rect(rect, boxColor);
     self->bounds = rect;
+    player_health_current = self->current_health;
     //slog("A.x %i", self->bounds.x);
     //slog("A.y %i", self->bounds.y);
     vector2d_set_magnitude(&self->velocity, grav);
     vector2d_copy(self->velocity, self->position);
-
+    vector2d_copy(player_position, self->position);
 }
 
 Entity* player_ent_new(Vector2D position)
@@ -130,6 +155,17 @@ Entity* player_ent_new(Vector2D position)
     ent->rotation.y = 64;
     ent->bounds = rect;
     vector2d_copy(ent->position, position);
+    json = sj_load("entity/player.json");
+    player_health = sj_get_integer_value(sj_object_get_value(json, "base_health"), player_health);
+    slog("base: %d", player_health);   
+    //if (sj_get_integer_value(sj_object_get_value(json, "using_save"), NULL)) {
+    //    player_health_current = sj_get_integer_value(sj_object_get_value(json, "base_health"), player_health_current);
+    //}
+    //else
+    //sj_get_integer_value(sj_object_get_value(json, "base_health"), player_health_current);
+    player_health_current = player_health;
+    slog("current: %d", player_health_current);
+
     return ent;
 }
 

@@ -147,17 +147,17 @@ void entity_draw(Entity *entity)
         NULL,
         (Uint32)entity->frame);
 
-    SDL_Rect rect;
-    rect.x = entity->position.x-20;
-    rect.y = entity->position.y-20;
-    rect.w = 40;
-    rect.h = 40;
-    Vector4D rectBoxColor;
-    rectBoxColor.x = 255;
-    rectBoxColor.y = 255;
-    rectBoxColor.z = 255;
-    rectBoxColor.w = 255;
-    gf2d_draw_rect(rect, rectBoxColor);
+    //SDL_Rect rect;
+    //rect.x = entity->position.x-20;
+    //rect.y = entity->position.y-20;
+    //rect.w = 40;
+    //rect.h = 40;
+    //Vector4D rectBoxColor;
+    //rectBoxColor.x = 255;
+    //rectBoxColor.y = 255;
+    //rectBoxColor.z = 255;
+    //rectBoxColor.w = 255;
+    //gf2d_draw_rect(rect, rectBoxColor);
 }
 
 void entity_free(Entity *entity)
