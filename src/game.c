@@ -25,11 +25,14 @@ int main(int argc, char * argv[])
     Vector4D mouseColor = { 255,100,255,200 };
     TileMap *tilemap;
 
+    //main collision areas
+    SDL_Rect col_1 = { 0,0,32,32 };
+
     Sprite* health_background;
     Sprite* health;
     Vector2D health_scale = { 0.2,0.2 };
     Vector2D current_health_scale = { 0.2,0.2 };
-    int currnet_player_health;
+    float currnet_player_health;
     
     /*program initializtion*/
     init_logger("gf2d.log");
@@ -54,21 +57,18 @@ int main(int argc, char * argv[])
     health_background = gf2d_sprite_load_image("images/health_background.png");
     health = gf2d_sprite_load_image("images/health.png");
     //bug_ent_new(vector2d(500,300));
-    player_ent_new(vector2d(500,300));
-    collision_ent_new(vector2d(300, 310));
+    player_ent_new(vector2d(500,600));
+    //,col_1 
+    collision_ent_new(vector2d(700, 600));
     tilemap = tilemap_load("levels/testlevel.json");
-
-
-    // add all entities and tiles to collision manager
-    collision_manager_init(1024);
 
     /*main game loop*/
     while(!done)
     {
         currnet_player_health = player_health_math();
-        slog("current hp %i", currnet_player_health);
+        //slog("current hp %i", currnet_player_health);
 
-        current_health_scale.x = current_health_scale.x * currnet_player_health;
+        current_health_scale.x = currnet_player_health *.2;
         SDL_PumpEvents();   // update SDL's internal event structures
         keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
         /*update things here*/

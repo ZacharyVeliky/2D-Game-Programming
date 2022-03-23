@@ -2,14 +2,6 @@
 #include "collision.h"
 #include "gfc_vector.h"
 
-typedef struct
-{
-    Uint32 max_objects;            /**<how many entities exist*/
-    SDL_Rect* col_list;           /**<a big ole list of colliders*/
-}CollisionManager;
-
-static CollisionManager collision_manager = { 0 };
-
 int collision_rect_test(SDL_Rect A, SDL_Rect B) {
     if ((A.x + A.w >= B.x && A.x <= B.x + B.w) || (A.y + A.h >= B.y && A.y >= B.y + B.h))
         return 1;
@@ -18,7 +10,7 @@ int collision_rect_test(SDL_Rect A, SDL_Rect B) {
 
 int collision_rect_test_right(SDL_Rect A, SDL_Rect B) {
     if ((A.x + A.w >= B.x && A.x <= B.x) || (A.y + A.h >= B.y && A.y >= B.y))
-        return 1;
+        return 3;
     return 0;
 }
 
@@ -28,78 +20,64 @@ int collision_rect_test_left(SDL_Rect A, SDL_Rect B) {
     return 0;
 }
 
-void collision_manager_clear()
-{
+int collision_test_all_ents(Entity* player) {
+    Entity* other;
     int i;
-    for (i = 0; i < collision_manager.max_objects; i++)
-    {
-        entity_free(&collision_manager.col_list[i]);
+    EntityManager* e_man = get_entity_manager_list();
+    for (int i = 0; i < e_man->max_entities; i++) {
+        other = &e_man->entity_list[i];
+        if (player == other)
+            continue;
+        if (collision_rect_test_right(player->bounds, other->bounds))
+            return  3;
+        if (collision_rect_test_left(player->bounds, other->bounds))
+            return 1;
+        else
+            return 0;
     }
 }
 
-void collision_manager_close()
-{
-    collision_manager_clear(); // clear all entities first
-    if (collision_manager.col_list != NULL)
-    {
-        free(collision_manager.col_list);
-    }
-    slog("entity manager closed");
-}
-
-void collision_manager_init(Uint32 max_entities)
-{
-    if (max_entities == 0)
-    {
-        slog("cannot allocate memory for zero entities!");
-        return;
-    }
-    if (collision_manager.col_list != NULL)
-    {
-        slog("entity manager already initialized");
-        return;
-    }
-    collision_manager.max_objects = max_entities;
-    collision_manager.col_list = gfc_allocate_array(sizeof(Entity), max_entities);
-    atexit(collision_manager_close);
-    slog("entity manager initialized");
-}
-
-Bool collision_check_left(SDL_Rect player)
-{
+Entity* collision_test_get_ent(Entity* player) {
+    Entity* other;
     int i;
-    for (i = 0; i < collision_manager.max_objects; i++)
-    {
-        collision_rect_test_left(player, collision_manager.col_list[i]);
+    EntityManager* e_man = get_entity_manager_list();
+    for (int i = 0; i < e_man->max_entities; i++) {
+        other = &e_man->entity_list[i];
+        if (player == other)
+            continue;
+        if (collision_rect_test(player->bounds, other->bounds))
+            return other;
     }
 }
 
-Bool collision_check_right(SDL_Rect player)
-{
+int collision_test_all_tiles(Entity* player) {
+    TileSet* other;
     int i;
-    for (i = 0; i < collision_manager.max_objects; i++)
-    {
-        collision_rect_test_right(player, collision_manager.col_list[i]);
+    TileSetManager* t_man = get_tile_manager_list();
+    for (int i = 0; i < t_man->tileset_count; i++) {
+        other = &t_man->tile_set_list[i];
+        if (player == other)
+            continue;
+        if (collision_rect_test_right(player->bounds, other->bounds))
+            return  3;
+        if (collision_rect_test_left(player->bounds, other->bounds))
+            return 1;
+        else
+            return 0;
     }
 }
 
-//Entity* object_new()
-//{
-//    int i;
-//    for (i = 0; i < collision_manager.max_objects; i++)
-//    {
-//        if (!collision_manager.col_list[i]._inuse)
-//        {
-//            //GOT ONE!
-//            collision_manager.col_list[i]._inuse = 1;
-//            collision_manager.col_list[i].draw_scale.x = 1;
-//            collision_manager.col_list[i].draw_scale.y = 1;
-//            return &collision_manager.col_list[i];
-//        }
-//    }
-//    slog("out of entities");
-//    return NULL;
-//}
+int collision_test_all(Entity* player_col) {
+    int t,e;
+    t = collision_test_all_tiles(player_col);
+    e = collision_test_all_ents(player_col);
+    if (t != 0)
+        return t;
+    else if (e != 0)
+        return e;
+    else
+        return 0;
+}
 
 //int collision_circle_test(Circle A, Circle B) {
 //    if (vector2d_magnitude_squared(

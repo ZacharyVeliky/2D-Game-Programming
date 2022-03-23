@@ -9,8 +9,7 @@
 
 //SDL_Rect rect;
 int dir;
-int dir;
-int dir;
+
 Vector2D scale = { 2,2 };
 
 void energy_attack(Vector2D start, int player_dir) {

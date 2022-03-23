@@ -7,13 +7,7 @@
 #include "../include/collision.h"
 #include "../include/tile_map.h"
 
-typedef struct
-{
-    Uint32 max_entities;            /**<how many entities exist*/
-    Entity  *entity_list;           /**<a big ole list of entities*/
-}EntityManager;
 
-static EntityManager entity_manager = {0};
 
 
 void entity_manager_close()
@@ -172,6 +166,10 @@ void entity_free(Entity *entity)
         gf2d_sprite_free(entity->sprite);
     }
     memset(entity,0,sizeof(Entity));
+}
+
+EntityManager* get_entity_manager_list() {
+    return &entity_manager;
 }
 
 // eof

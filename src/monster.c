@@ -32,6 +32,7 @@ void attack() {
 
 void monster_attack() {
     if (SDL_GetTicks() >= last_attack_time)
+
         attack();
 }
 

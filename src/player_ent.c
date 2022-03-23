@@ -1,9 +1,8 @@
 #include "simple_logger.h"
-#include "time.h"
 #include "player_ent.h"
 #include "gfc_vector.h"
 #include "../include/gf2d_draw.h"
-#include "collision_ent.h"
+#include "collision.h"
 #include "../include/energy_attack.h"
 #include "simple_json.h"
 
@@ -11,13 +10,15 @@
 
 SJson* json;
 
-float angle = 0;
+Entity* player_ent;
+
+float angle = 90;
 float grav = -9.8;
 SDL_Rect rect;
 
 Vector2D player_position;
 
-int player_health = 3;
+int player_health;
 int player_health_current = 3;
 
 Bool has_energy_attack;
@@ -26,13 +27,16 @@ Uint32 last_time;
 Uint32 attack_last_time;
 
 float player_health_math() {
-    float ret = player_health_current / player_health;
+    float ret = (float)player_health_current / (float)player_health;
     return ret;
 }
 
 void player_damage(int damage) {
-    if (player_health_current >= 1)
+    if (player_health_current >= 1) {
         player_health_current -= damage;
+        if (player_health_current <= 0)
+            slog("You Died");
+    }
     else
         slog("You Died");
 }
@@ -65,9 +69,10 @@ void player_think(Entity* self)
     keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
     Entity* col = get_col_ent();
 
-    if (collision_rect_test(self->bounds, col->bounds)) {
-        slog("touch");
-    }
+    //if (collision_rect_test(self->bounds, col->bounds)) {
+    //    slog("touch");
+    //}
+    slog("adws: %i", collision_test_all(player_ent));
 
     if (keys[SDL_SCANCODE_W] )
     {
@@ -76,22 +81,26 @@ void player_think(Entity* self)
         //vector2d_set_magnitude(&self->position.y, 3);
         //vector2d_copy(self->velocity, self->position);
     }
-    if (keys[SDL_SCANCODE_D] && !collision_rect_test_right(self->bounds, col->bounds))
+
+    if (keys[SDL_SCANCODE_D] && (collision_test_all(player_ent) != 3))// Right
     {
-        // Right
+        
         //fix later
         //vector2d_set_magnitude(&self->position.x, 3);
         //vector2d_copy(self->velocity, self->position);
         self->position.x += 1;
+        //self->sprite = gf2d_sprite_load_all("images/player-right.png", 99, 115, 5); 
         angle = -90;
-    }
-    if (keys[SDL_SCANCODE_A] && !collision_rect_test_left(self->bounds, col->bounds))
+    }// collision_rect_test_left(player->bounds, col->bounds) != 2
+
+    if (keys[SDL_SCANCODE_A] && (collision_test_all(player_ent) != 1))// Left
     {
-        // Left
+        
         //fix later
         //vector2d_set_magnitude(&self->position.x, -3);
         //vector2d_copy(self->velocity, self->position);
         self->position.x -= 1;
+        //self->sprite = gf2d_sprite_load_all("images/player-left.png", 99, 115, 5);
         angle = 90;
     }
     else
@@ -110,7 +119,8 @@ void player_think(Entity* self)
         }
     }
     if (keys[SDL_SCANCODE_SPACE] && SDL_GetTicks() >= attack_last_time + 1000) {
-        player_attack(1);
+        if (has_energy_attack)
+            player_attack(1);
         attack_last_time = SDL_GetTicks();
     }
 }
@@ -130,9 +140,9 @@ void player_update(Entity* self) {
     boxColor.y = 255;
     boxColor.z = 255;
     boxColor.w = 255;
-    gf2d_draw_rect(rect, boxColor);
+    //gf2d_draw_rect(rect, boxColor);
     self->bounds = rect;
-    player_health_current = self->current_health;
+    //player_health_current = self->current_health;
     //slog("A.x %i", self->bounds.x);
     //slog("A.y %i", self->bounds.y);
     vector2d_set_magnitude(&self->velocity, grav);
@@ -142,6 +152,7 @@ void player_update(Entity* self) {
 
 Entity* player_ent_new(Vector2D position)
 {
+    Vector2D sca = { 0.5,0.5 };
     Entity* ent;
     ent = entity_new();
     if (!ent)
@@ -149,8 +160,8 @@ Entity* player_ent_new(Vector2D position)
         slog("no space for more ents");
         return NULL;
     }
-    //ent->sprite = gf2d_sprite_load_all("images/space_bug_top.png", 128, 128, 16);
-    ent->sprite = gf2d_sprite_load_all("images/player.png", 99, 115, 5);
+    ent->sprite = gf2d_sprite_load_all("images/space_bug_top.png", 128, 128, 16);
+    //ent->sprite = gf2d_sprite_load_all("images/player-right.png", 99, 115, 5);
     ent->think = player_think;
     ent->update = player_update;
     ent->draw_offset.x = -64;
@@ -158,18 +169,20 @@ Entity* player_ent_new(Vector2D position)
     ent->rotation.x = 64;
     ent->rotation.y = 64;
     ent->bounds = rect;
+    //ent->draw_scale = sca; //uncomment for new sprite
     vector2d_copy(ent->position, position);
     json = sj_load("entity/player.json");
-    //player_health = sj_get_integer_value(sj_object_get_value(json, "base_health"), player_health);
-    slog("base: %d", player_health);   
-    //if (sj_get_integer_value(sj_object_get_value(json, "using_save"), NULL)) {
-    //    player_health_current = sj_get_integer_value(sj_object_get_value(json, "base_health"), player_health_current);
+    sj_get_integer_value(sj_object_get_value(json, "player_health"), &player_health);
+    //slog("base: %d", player_health);   
+    //if (sj_get_integer_value(sj_object_get_value(json, "using_save"), NULL) == 1) {
+    //    player_health_current = sj_get_integer_value(sj_object_get_value(json, "base_health"), &player_health_current);
     //}
     //else
-    //sj_get_integer_value(sj_object_get_value(json, "base_health"), player_health_current);
-    //player_health_current = player_health;
-    slog("current: %d", player_health_current);
+    //sj_get_integer_value(sj_object_get_value(json, "base_health"), &player_health_current);
+    player_health_current = player_health;
+    //slog("current: %d", player_health_current);
     sj_free(json);
+    player_ent = ent;
     return ent;
 }
 
