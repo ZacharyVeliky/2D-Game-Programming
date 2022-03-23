@@ -10,14 +10,9 @@
 //SDL_Rect rect;
 int dir;
 
-Vector2D scale = { 2,2 };
+//Vector2D scale = { 2,2 };
 
-void energy_attack(Vector2D start, int player_dir) {
-    dir = player_dir;
-    energy_attack_new(start);
-}
-
-void energy_think(Entity* self)
+void ability_think(Entity* self)
 {
     //Vector2D direction;
     //int mx, my;
@@ -34,7 +29,7 @@ void energy_think(Entity* self)
         self->position.x += 2;
 }
 
-void energy_update(Entity* self) {
+void ability_update(Entity* self) {
     if (!self)return;
     //Vector2D direction;
     //direction.x = 0 - self->position.x;
@@ -64,16 +59,17 @@ Entity* ability_item_new(Vector2D position, int item_id)
         return NULL;
     }
     ent->sprite = gf2d_sprite_load_all("images/energy_attack.png", 32, 32, 4);
-    ent->think = energy_think;
-    ent->update = energy_update;
+    ent->think = ability_think;
+    ent->update = ability_update;
     ent->draw_offset.x = 0;
     ent->draw_offset.y = -32;
     ent->rotation.x = 16;
     ent->rotation.y = 16;
-    
+    ent->is_item = true;
+    ent->item_id = item_id;
     //ent->bounds = rect;
     ent->direction = dir;
-    ent->draw_scale = scale;
+    //ent->draw_scale = scale;
     vector2d_copy(ent->position, position);
     return ent;
 }
