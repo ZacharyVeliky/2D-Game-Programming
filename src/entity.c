@@ -152,12 +152,12 @@ void entity_draw(Entity *entity)
     //rect.y = entity->position.y-20;
     //rect.w = 40;
     //rect.h = 40;
-    //Vector4D rectBoxColor;
-    //rectBoxColor.x = 255;
-    //rectBoxColor.y = 255;
-    //rectBoxColor.z = 255;
-    //rectBoxColor.w = 255;
-    //gf2d_draw_rect(rect, rectBoxColor);
+    Vector4D rectBoxColor;
+    rectBoxColor.x = 255;
+    rectBoxColor.y = 255;
+    rectBoxColor.z = 255;
+    rectBoxColor.w = 255;
+    gf2d_draw_rect(entity->bounds, rectBoxColor);
 }
 
 void entity_free(Entity *entity)

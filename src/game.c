@@ -18,7 +18,7 @@ int main(int argc, char * argv[])
     int done = 0;
     const Uint8 * keys;
     Sprite *sprite;
-    
+
     int mx,my;
     float mf = 0;
     Sprite *mouse;
@@ -65,9 +65,9 @@ int main(int argc, char * argv[])
     /*main game loop*/
     while(!done)
     {
-        
-
         currnet_player_health = player_health_math();
+        slog("current hp %i", currnet_player_health);
+
         current_health_scale.x = current_health_scale.x * currnet_player_health;
         SDL_PumpEvents();   // update SDL's internal event structures
         keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame

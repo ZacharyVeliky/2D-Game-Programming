@@ -1,7 +1,7 @@
 #ifndef __UNIV_H__
 #define __UNIV_H__
 
-double deltaTime;
+#include<SDL.h>
 
-double getDeltaTime();
+Uint32 game_time;
 #endif

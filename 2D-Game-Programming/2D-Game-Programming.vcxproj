@@ -182,6 +182,7 @@
     <ClInclude Include="..\include\gf2d_draw.h" />
     <ClInclude Include="..\include\gf2d_graphics.h" />
     <ClInclude Include="..\include\gf2d_sprite.h" />
+    <ClInclude Include="..\include\monster.h" />
     <ClInclude Include="..\include\player_ent.h" />
     <ClInclude Include="..\include\resource.h" />
     <ClInclude Include="..\include\tile_set.h" />
@@ -217,6 +218,7 @@
     <ClCompile Include="..\src\gf2d_draw.c" />
     <ClCompile Include="..\src\gf2d_graphics.c" />
     <ClCompile Include="..\src\gf2d_sprite.c" />
+    <ClCompile Include="..\src\monster.c" />
     <ClCompile Include="..\src\player_ent.c" />
     <ClCompile Include="..\src\tile_map.c" />
     <ClCompile Include="..\src\tile_set.c" />

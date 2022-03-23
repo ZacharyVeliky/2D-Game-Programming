@@ -111,6 +111,9 @@
     <ClInclude Include="..\include\energy_attack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\monster.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="2D-Game-Programming.rc">
@@ -200,6 +203,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\energy_attack.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\monster.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

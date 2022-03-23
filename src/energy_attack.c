@@ -42,16 +42,16 @@ void energy_update(Entity* self) {
     //direction.y = 0 - self->position.y;
 
     SDL_Rect rect2;
-    rect2.x = self->position.x - 0;
-    rect2.y = self->position.y - 16;
-    rect2.w = 8;
-    rect2.h = 8;
-    Vector4D boxColor;
-    boxColor.x = 255;
-    boxColor.y = 255;
-    boxColor.z = 255;
-    boxColor.w = 255;
-    gf2d_draw_rect(rect2, boxColor);
+    rect2.x = self->position.x + 32;
+    rect2.y = self->position.y - 15;
+    rect2.w = 32;
+    rect2.h = 32;
+    //Vector4D boxColor;
+    //boxColor.x = 255;
+    //boxColor.y = 255;
+    //boxColor.z = 255;
+    //boxColor.w = 255;
+    //gf2d_draw_rect(rect2, boxColor);
     self->bounds = rect2;
 }
 
