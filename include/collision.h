@@ -32,10 +32,14 @@
 
 //Bool collision_check_left(SDL_Rect player);
 //Bool collision_check_right(SDL_Rect player);
-
-int collision_test_all(Entity* player_col);
-int collision_test_all_tiles(Entity* player);
 Entity* collision_test_get_ent(Entity* player);
+int collision_test_all_ents(Entity* player);
+
+int collision_test_all_tiles_precise(Entity* player);
+int collision_test_all_tiles(Entity* player);
+
+int collision_test_all_precise(Entity* player_col);
+
 
 #endif // !__COLLISION_H__
 

@@ -10,4 +10,6 @@
  */
 Entity* player_ent_new(Vector2D position);
 float player_health_math();
+float player_exp_math();
+void player_get_exp(int exp);
 #endif

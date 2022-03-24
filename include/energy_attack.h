@@ -10,5 +10,5 @@
  * @returns NULL on error, or a pointer to the bug
  */
 Entity* energy_attack_new(Vector2D position);
-void energy_attack(Vector2D start, int dir);
+void energy_attack(Vector2D start, int dir, Entity* owner);
 #endif

@@ -1,6 +1,5 @@
 #include "simple_logger.h"
 #include "collision.h"
-#include "gfc_vector.h"
 #include "tile_set.h"
 
 typedef struct
@@ -12,19 +11,19 @@ typedef struct
 static CollisionManager collision_manager = { 0 };
 
 int collision_rect_test(SDL_Rect A, SDL_Rect B) {
-    if ((A.x + A.w >= B.x && A.x <= B.x + B.w) || (A.y + A.h >= B.y && A.y >= B.y + B.h))
+    if (A.x <= B.x + B.w && A.x + A.w >= B.x && A.y <= B.y + B.h && A.y + A.h >= B.y)
         return 1;
     return 0;
 }
 
-int collision_rect_test_right(SDL_Rect A, SDL_Rect B) {
-    if ((A.x + A.w >= B.x && A.x <= B.x) || (A.y + A.h >= B.y && A.y >= B.y))
+int collision_rect_test_right(SDL_Rect A, SDL_Rect B) {//|| (A.y + A.h >= B.y && A.y >= B.y) &&(A.y <= B.y + B.h - 1 && A.y + A.h + 1 >= B.y) 
+    if ((A.x + A.w >= B.x && A.x <= B.x))//
         return 1;
     return 0;
 }
 
-int collision_rect_test_left(SDL_Rect A, SDL_Rect B) {
-    if ((A.x >= B.x && A.x <= B.x + B.w) || (A.y >= B.y && A.y >= B.y + B.h))
+int collision_rect_test_left(SDL_Rect A, SDL_Rect B) {//|| (A.y >= B.y && A.y >= B.y + B.h)
+    if ((B.x + B.w >= A.x && B.x <= A.x) )// 
         return 1;
     return 0;
 }
@@ -46,40 +45,71 @@ int collision_test_all_ents(Entity* player) {
     Entity* other;
     EntityManager* e_man = get_entity_manager_list();
     for (int i = 0; i < e_man->max_entities; i++) {
-        slog("%i", i);
+        
         other = &e_man->entity_list[i];
         if (player == other)
             continue;
-        if (collision_rect_test_right(player->bounds, other->bounds))
-            return  3;
-        if (collision_rect_test_left(player->bounds, other->bounds))
+
+        if (collision_rect_test(player->bounds, other->bounds))
             return 1;
-        else
-            return 0;
     }
+    return 0;
+}
+
+int collision_test_all_ents_precise(Entity* player) {
+    Entity* other;
+    EntityManager* e_man = get_entity_manager_list();
+    for (int i = 0; i < e_man->max_entities; i++) {
+        
+        other = &e_man->entity_list[i];
+        if (player == other)
+            continue;
+        if (collision_rect_test(player->bounds, other->bounds)) {
+            if (collision_rect_test_right(player->bounds, other->bounds))
+                return  3;
+            if (collision_rect_test_left(player->bounds, other->bounds))
+                return 1;
+        }
+    }
+    return 0;
 }
 
 int collision_test_all_tiles(Entity* player) {
     TileSet* other;
     TileSetManager* t_man = get_tile_set_manager();
     for (int i = 0; i < t_man->tileset_count; i++) {
-        
+        other = &t_man->tile_set_list[i];
+
+        if (collision_rect_test(player->bounds, other->bounds))
+           return 1;
+    }
+    return 0;
+}
+
+int collision_test_all_tiles_precise(Entity* player) {
+    TileSet* other;
+    TileSetManager* t_man = get_tile_set_manager();
+    for (int i = 0; i < t_man->tileset_count; i++) {
         other = &t_man->tile_set_list[i];
         if (player == other)
             continue;
-        if (collision_rect_test_right(player->bounds, other->bounds))
+        
+        if (collision_rect_test_right(player->bounds, other->bounds)) {
+            //slog("3");
             return  3;
-        if (collision_rect_test_left(player->bounds, other->bounds))
+        }
+        if (collision_rect_test_left(player->bounds, other->bounds)) {
+            //slog("1");
             return 1;
-        else
-            return 0;
+        }
     }
+    return 0;
 }
 
-int collision_test_all(Entity* player_col) {
+int collision_test_all_precise(Entity* player_col) {
     int t, e;
-    t = collision_test_all_tiles(player_col);
-    e = collision_test_all_ents(player_col);
+    t = collision_test_all_tiles_precise(player_col);
+    e = collision_test_all_ents_precise(player_col);
     if (t != 0)
         return t;
     if (e != 0)
@@ -87,8 +117,3 @@ int collision_test_all(Entity* player_col) {
     else
         return 0;
 }
-//int collision_circle_test(Circle A, Circle B) {
-//    if (vector2d_magnitude_squared(
-//        vector2d(A.x - B.x, A.y, B.y)) > vector2d((A.r, B.r) * (A.x, B.r)))return 1;
-//    return 0;
-//}

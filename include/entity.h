@@ -24,7 +24,8 @@ typedef struct ENTITY_S
     Bool        is_collected;
     int         item_id;
     Bool        can_be_damaged;
-    Bool        is_enemy;
+    Bool        is_player;
+    Bool        is_mirror;
     void (*think)(struct ENTITY_S *self);   /**<a pointer to a think function for this entity*/
     void (*update)(struct ENTITY_S *self);   /**<a pointer to a think function for this entity*/
 }Entity;

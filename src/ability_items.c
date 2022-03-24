@@ -52,20 +52,28 @@ Entity* ability_item_new(Vector2D position, int item_id)
         return NULL;
     }switch (item_id)
     {
-    case 1: ent->sprite = gf2d_sprite_load_all("images/laser_gun.png", 344, 352, 4); break;
-    case 2: ent->sprite = gf2d_sprite_load_all("images/jump_boots.png", 32, 32, 4); break;
+    case 1: ent->sprite = gf2d_sprite_load_all("images/laser_gun.png", 344, 352, 4); 
+            ent->draw_offset.x = -20;//-172
+            ent->draw_offset.y = -20;//-167
+            ent->draw_scale = vector2d(0.2, 0.2);
+        break;
+    case 2: ent->sprite = gf2d_sprite_load_all("images/rocket_boots.png", 256, 256, 4); 
+            ent->draw_offset.x = +25;//-172
+            ent->draw_offset.y = -20;//-167
+            ent->draw_scale = vector2d(0.5, 0.5);
+            break;
     case 3: ent->sprite = gf2d_sprite_load_all("images/bomb.png", 32, 32, 4); break;
     case 4: ent->sprite = gf2d_sprite_load_all("images/laser_gun.png", 32, 32, 4); break;
     case 5: ent->sprite = gf2d_sprite_load_all("images/laser_gun.png", 32, 32, 4); break;
 
-    default: ent->sprite = gf2d_sprite_load_all("images/laser_gun.png", 32, 32, 4);
+    default:ent->sprite = gf2d_sprite_load_all("images/laser_gun.png", 32, 32, 4);
+            ent->draw_offset.x = -20;//-172
+            ent->draw_offset.y = -20;//-167    
         break;
     }
     ent->think = ability_think;
     ent->update = ability_update;
     ent->draw_scale = vector2d(0.2,0.2);
-    ent->draw_offset.x = -172;
-    ent->draw_offset.y = -167;
     ent->is_item = true;
     ent->item_id = item_id;
     //ent->bounds = rect;

@@ -31,8 +31,11 @@ int main(int argc, char * argv[])
     Sprite* exp;
     Vector2D health_scale = { 0.2,0.1 };
     Vector2D current_health_scale = { 0.2,0.1 };
+    Vector2D current_exp_scale = { 0.2,0.1 };
     float currnet_player_health;
     float currnet_player_exp;
+
+    Uint32 spawn_time = 0;
     
     /*program initializtion*/
     init_logger("gf2d.log");
@@ -48,7 +51,7 @@ int main(int argc, char * argv[])
     gf2d_graphics_set_frame_delay(16);
     gf2d_sprite_init(1024);
     tile_set_manager_init(32);
-    entity_manager_init(1024);
+    entity_manager_init(512);
     SDL_ShowCursor(SDL_DISABLE);
     
     /*demo setup*/
@@ -58,18 +61,27 @@ int main(int argc, char * argv[])
     health = gf2d_sprite_load_image("images/health.png");
     exp = gf2d_sprite_load_image("images/experience.png");
     //bug_ent_new(vector2d(500,300));
-    player_ent_new(vector2d(200,300));
-    collision_ent_new(vector2d(300, 310));
-    ability_item_new(vector2d(100, 300),1);
+    player_ent_new(vector2d(500,587));
+    collision_ent_new(vector2d(700, 580));
+    collision_ent_new(vector2d(200, 580));
+    ability_item_new(vector2d(400, 580),1);
+    ability_item_new(vector2d(50, 580),2);
     tilemap = tilemap_load("levels/testlevel.json");
 
     /*main game loop*/
     while(!done)
     {
         currnet_player_health = player_health_math();
-        //slog("current hp %i", currnet_player_health);
-
         current_health_scale.x = 0.2 * currnet_player_health;
+        
+        currnet_player_exp = player_exp_math();
+        current_exp_scale.x = 0.2 * currnet_player_exp;
+        if (SDL_GetTicks() >= spawn_time + 10000) {
+            collision_ent_new(vector2d(800, 580));
+            collision_ent_new(vector2d(900, 580));
+            spawn_time = SDL_GetTicks();
+        }
+
         SDL_PumpEvents();   // update SDL's internal event structures
         keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
         /*update things here*/
@@ -120,7 +132,7 @@ int main(int argc, char * argv[])
             gf2d_sprite_draw(
                 exp,
                 vector2d(11.9, 31.9),
-                &current_health_scale,
+                &current_exp_scale,
                 NULL,
                 NULL,
                 NULL,

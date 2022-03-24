@@ -134,7 +134,7 @@ void entity_draw(Entity *entity)
         &entity->draw_scale,
         NULL,
         &entity->rotation,
-        NULL,
+        NULL, //flip
         NULL,
         (Uint32)entity->frame);
 

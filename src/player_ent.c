@@ -20,17 +20,36 @@ Vector2D player_position;
 int player_health;
 int player_health_current = 3;
 
+int level = 1;
+int req_exp = 3;
+int current_exp = 0;
+
 Bool has_energy_attack = 0;
+Bool has_rocket_boots = 0;
 
 Uint32 last_time;
 Uint32 attack_last_time;
+Uint32 last_jump_time;
 
 float player_health_math() {
     float ret = (float)player_health_current / (float)player_health;
-    //slog("base: %f", ret);
-    //slog("health: %i", player_health);
-    //slog("current: %i", player_health_current);
     return ret;
+}
+
+float player_exp_math() {
+    float ret = (float)current_exp / (float)req_exp;
+    if (ret == 1) {
+        current_exp = 0;
+        level++;
+        player_health++;
+        req_exp++;
+        player_health_current = player_health;
+    }
+    return ret;
+}
+
+void player_get_exp(int exp) {
+    current_exp += exp;
 }
 
 void player_damage(int damage) {
@@ -43,31 +62,28 @@ void player_damage(int damage) {
         slog("You Died");
 }
 
-void player_attack(atkNum) {
+void player_attack(int atkNum, Entity* player) {
     switch (atkNum)
     {
-    case 1: energy_attack(player_position, angle);
+    case 1: energy_attack(player_position, angle, player);
     default:
         break;
     }
 }
 
-void enable_blaster() {
-    has_energy_attack = true;
-    
-}
-
 void player_think(Entity* self)
 {
+    if (!self)return;
+
     //Vector2D direction;
     //int mx, my;
     Entity* ent;
     const Uint8* keys;
-    if (!self)return;
+    
     self->frame = (self->frame + 0.1);
     if (self->frame >= 5)self->frame = 0;
 
-    self->rotation.z = angle;
+    //self->rotation.z = angle;
 
     keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
     //Entity* col = get_col_ent();
@@ -76,23 +92,24 @@ void player_think(Entity* self)
     //    slog("touch");
     //}
 
-    if (keys[SDL_SCANCODE_W] )
+    if (keys[SDL_SCANCODE_W] && self->position.y > 586 && SDL_GetTicks() > last_jump_time + 100 && has_rocket_boots)
     {
         // jump
         //fix later
-        //vector2d_set_magnitude(&self->position.y, 3);
-        //vector2d_copy(self->velocity, self->position);
+        vector2d_set_magnitude(&self->position.y, 1);
+        vector2d_copy(self->velocity, self->position);
+        last_jump_time = SDL_GetTicks();
     }
-    if (keys[SDL_SCANCODE_D] && (collision_test_all(self) != 3))
+    if (keys[SDL_SCANCODE_D] && (collision_test_all_precise(self) != 3))
     {
         // Right
         //fix later
         //vector2d_set_magnitude(&self->position.x, 3);
         //vector2d_copy(self->velocity, self->position);
         self->position.x += 1;
-        angle = -90;
+        angle = 0;
     }
-    if (keys[SDL_SCANCODE_A] && (collision_test_all(self) != 1))
+    if (keys[SDL_SCANCODE_A] && (collision_test_all_precise(self) != 1))
     {
         // Left
         //fix later
@@ -117,7 +134,7 @@ void player_think(Entity* self)
         }
     }
     if (keys[SDL_SCANCODE_SPACE] && (SDL_GetTicks() >= attack_last_time + 1000) && has_energy_attack) {
-        player_attack(1);
+        player_attack(1, self);
         attack_last_time = SDL_GetTicks();
     }
     //collect items
@@ -128,14 +145,20 @@ void player_think(Entity* self)
             {
             case 1:
                 ent->is_collected = true;
-                enable_blaster();
+                has_energy_attack = true;
+                break;
+            case 2:
+                ent->is_collected = true;
+                has_rocket_boots = true;
                 break;
             default:
                 break;
             }
         }
     }
-
+    if (!collision_test_all_tiles(self) && !collision_test_all_ents(self) && self->position.y < 586) {
+        self->position.y++;
+    }
 }
 
 void player_update(Entity* self) {
@@ -174,14 +197,16 @@ Entity* player_ent_new(Vector2D position)
         return NULL;
     }
     //ent->sprite = gf2d_sprite_load_all("images/space_bug_top.png", 128, 128, 16);
-    ent->sprite = gf2d_sprite_load_all("images/player.png", 99, 115, 5);
+    ent->sprite = gf2d_sprite_load_all("images/t_player.png", 99, 115, 5);
     ent->think = player_think;
     ent->update = player_update;
-    ent->draw_offset.x = -64;
-    ent->draw_offset.y = -64;
+    ent->draw_offset.x = -32;
+    ent->draw_offset.y = -32;
+    ent->draw_scale = vector2d(0.5, 0.5);
     ent->rotation.x = 64;
     ent->rotation.y = 64;
     ent->bounds = rect;
+    ent->is_player == true;
     vector2d_copy(ent->position, position);
 
     json = sj_load("entity/player.json");

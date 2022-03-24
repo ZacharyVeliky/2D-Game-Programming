@@ -2,6 +2,7 @@
 #include "collision_ent.h"
 #include "gfc_vector.h"
 #include "../include/gf2d_draw.h"
+#include "../include/player_ent.h"
 
 
 Entity* col_ent;
@@ -19,6 +20,10 @@ void collision_think(Entity* self)
 
 void collision_update(Entity* self) {
     if (!self)return;
+    if (self->health <= 0) {
+        player_get_exp(1);
+        entity_free(self);
+    }
     Vector2D direction;
     direction.x = 0 - self->position.x;
     direction.y = 0 - self->position.y;
@@ -57,6 +62,7 @@ Entity* collision_ent_new(Vector2D position)
     ent->rotation.x = 64;
     ent->rotation.y = 64;
     ent->bounds = rect;
+    ent->health = 1;
     vector2d_copy(ent->position, position);
     col_ent = ent;
     return ent;

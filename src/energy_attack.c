@@ -9,13 +9,19 @@
 
 //SDL_Rect rect;
 int dir;
-int dir;
-int dir;
+
 Vector2D scale = { 2,2 };
 
-void energy_attack(Vector2D start, int player_dir) {
-    dir = player_dir;
+Entity* parent;
+
+Uint32 life = 0;
+
+
+void energy_attack(Vector2D start, int owner_dir, Entity* owner) {
+    dir = owner_dir;
+    parent = owner;
     energy_attack_new(start);
+    
 }
 
 void energy_think(Entity* self)
@@ -24,6 +30,13 @@ void energy_think(Entity* self)
     //int mx, my;
     Entity* ent;
     ent = collision_test_get_ent(self);
+    if (ent) {
+        if (!ent->is_player) {
+            ent->health -= 1;
+        }
+    }
+    if (SDL_GetTicks() >= life + 1000)
+        entity_free(self);
 
     if (!self)return;
     self->frame = (self->frame + 0.1);
@@ -47,6 +60,8 @@ void energy_update(Entity* self) {
 
     SDL_Rect rect2;
     rect2.x = self->position.x + 32;
+    if (dir == 90)
+        rect2.x = self->position.x - 64;
     rect2.y = self->position.y - 15;
     rect2.w = 32;
     rect2.h = 32;
@@ -79,6 +94,7 @@ Entity* energy_attack_new(Vector2D position)
     ent->direction = dir;
     ent->draw_scale = scale;
     vector2d_copy(ent->position, position);
+    life = SDL_GetTicks();
     return ent;
 }
 
