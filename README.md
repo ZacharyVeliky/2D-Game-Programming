@@ -1,6 +1,6 @@
 # gameframework2d (GF2D)
 This trash I made that’s supposed to be a Metroid Vania<br />
-##Controls
+## Controls
 A: left<br />
 D: right<br />
 Mouse: Aiming<br />
