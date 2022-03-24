@@ -17,7 +17,7 @@ SDL_Rect rect;
 
 Vector2D player_position;
 
-int player_health = 3;
+int player_health;
 int player_health_current = 3;
 
 Bool has_energy_attack;
@@ -26,13 +26,19 @@ Uint32 last_time;
 Uint32 attack_last_time;
 
 float player_health_math() {
-    float ret = player_health_current / player_health;
+    float ret = (float)player_health_current / (float)player_health;
+    //slog("base: %f", ret);
+    //slog("health: %i", player_health);
+    //slog("current: %i", player_health_current);
     return ret;
 }
 
 void player_damage(int damage) {
-    if (player_health_current >= 1)
+    if (player_health_current >= 1) {
         player_health_current -= damage;
+        if (player_health_current <= 0)
+            slog("You Died");
+    }
     else
         slog("You Died");
 }
@@ -65,9 +71,9 @@ void player_think(Entity* self)
     keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
     Entity* col = get_col_ent();
 
-    if (collision_rect_test(self->bounds, col->bounds)) {
-        slog("touch");
-    }
+    //if (collision_test_all(self)) {
+    //    slog("touch");
+    //}
 
     if (keys[SDL_SCANCODE_W] )
     {
@@ -76,7 +82,7 @@ void player_think(Entity* self)
         //vector2d_set_magnitude(&self->position.y, 3);
         //vector2d_copy(self->velocity, self->position);
     }
-    if (keys[SDL_SCANCODE_D] && !collision_rect_test_right(self->bounds, col->bounds))
+    if (keys[SDL_SCANCODE_D] && (collision_test_all(self) != 3))
     {
         // Right
         //fix later
@@ -85,7 +91,7 @@ void player_think(Entity* self)
         self->position.x += 1;
         angle = -90;
     }
-    if (keys[SDL_SCANCODE_A] && !collision_rect_test_left(self->bounds, col->bounds))
+    if (keys[SDL_SCANCODE_A] && (collision_test_all(self) != 1))
     {
         // Left
         //fix later
@@ -132,7 +138,6 @@ void player_update(Entity* self) {
     boxColor.w = 255;
     gf2d_draw_rect(rect, boxColor);
     self->bounds = rect;
-    player_health_current = self->current_health;
     //slog("A.x %i", self->bounds.x);
     //slog("A.y %i", self->bounds.y);
     vector2d_set_magnitude(&self->velocity, grav);
@@ -159,15 +164,10 @@ Entity* player_ent_new(Vector2D position)
     ent->rotation.y = 64;
     ent->bounds = rect;
     vector2d_copy(ent->position, position);
+
     json = sj_load("entity/player.json");
-    //player_health = sj_get_integer_value(sj_object_get_value(json, "base_health"), player_health);
+    sj_get_integer_value(sj_object_get_value(json, "base_health"), &player_health);
     slog("base: %d", player_health);   
-    //if (sj_get_integer_value(sj_object_get_value(json, "using_save"), NULL)) {
-    //    player_health_current = sj_get_integer_value(sj_object_get_value(json, "base_health"), player_health_current);
-    //}
-    //else
-    //sj_get_integer_value(sj_object_get_value(json, "base_health"), player_health_current);
-    //player_health_current = player_health;
     slog("current: %d", player_health_current);
     sj_free(json);
     return ent;

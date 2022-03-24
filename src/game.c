@@ -29,7 +29,7 @@ int main(int argc, char * argv[])
     Sprite* health;
     Vector2D health_scale = { 0.2,0.2 };
     Vector2D current_health_scale = { 0.2,0.2 };
-    int currnet_player_health;
+    float currnet_player_health;
     
     /*program initializtion*/
     init_logger("gf2d.log");
@@ -54,21 +54,17 @@ int main(int argc, char * argv[])
     health_background = gf2d_sprite_load_image("images/health_background.png");
     health = gf2d_sprite_load_image("images/health.png");
     //bug_ent_new(vector2d(500,300));
-    player_ent_new(vector2d(500,300));
-    collision_ent_new(vector2d(300, 310));
+    player_ent_new(vector2d(300,300));
+    collision_ent_new(vector2d(500, 310));
     tilemap = tilemap_load("levels/testlevel.json");
-
-
-    // add all entities and tiles to collision manager
-    collision_manager_init(1024);
 
     /*main game loop*/
     while(!done)
     {
         currnet_player_health = player_health_math();
-        slog("current hp %i", currnet_player_health);
+        //slog("current hp %i", currnet_player_health);
 
-        current_health_scale.x = current_health_scale.x * currnet_player_health;
+        current_health_scale.x = 0.2 * currnet_player_health;
         SDL_PumpEvents();   // update SDL's internal event structures
         keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
         /*update things here*/
@@ -82,9 +78,9 @@ int main(int argc, char * argv[])
         gf2d_graphics_clear_screen();// clears drawing buffers
         // all drawing should happen betweem clear_screen and next_frame
             //backgrounds drawn first
-            gf2d_sprite_draw_image(sprite,vector2d(0,0));
-            
+            gf2d_sprite_draw_image(sprite,vector2d(0,0));      
             // draw other game elements
+
             tilemap_draw(tilemap);
             gf2d_sprite_draw(
                 health_background,
@@ -95,6 +91,7 @@ int main(int argc, char * argv[])
                 NULL,
                 NULL,
                 NULL);
+
             gf2d_sprite_draw(
                 health,
                 vector2d(11.9, 11.9),
@@ -104,6 +101,7 @@ int main(int argc, char * argv[])
                 NULL,
                 NULL,
                 NULL);
+
             entity_manager_draw_all();
             //UI elements last
             gf2d_sprite_draw(
@@ -115,6 +113,7 @@ int main(int argc, char * argv[])
                 NULL,
                 &mouseColor,
                 (int)mf);
+
         gf2d_grahics_next_frame();// render current draw frame and skip to the next frame
         
         if (keys[SDL_SCANCODE_ESCAPE])done = 1; // exit condition

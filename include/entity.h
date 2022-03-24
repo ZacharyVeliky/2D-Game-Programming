@@ -3,7 +3,6 @@
 
 #include <SDL.h>
 #include "gf2d_sprite.h"
-#include "collision.h"
 
 typedef struct ENTITY_S
 {
@@ -25,6 +24,13 @@ typedef struct ENTITY_S
     void (*update)(struct ENTITY_S *self);   /**<a pointer to a think function for this entity*/
 }Entity;
 
+typedef struct
+{
+    Uint32 max_entities;            /**<how many entities exist*/
+    Entity* entity_list;           /**<a big ole list of entities*/
+}EntityManager;
+
+static EntityManager entity_manager = { 0 };
 
 /**
  * @brief initialize the internal entity entity_manager_init
@@ -86,4 +92,5 @@ void entity_draw(Entity *entity);
  */
 void entity_free(Entity *entity);
 
+EntityManager* get_entity_manager_list();
 #endif

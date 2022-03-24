@@ -106,14 +106,6 @@ void tilemap_free(TileMap *map)
     free(map);
 }
 
-int tilemap_collision_test(TileMap* map, Rect a) {
-    Rect t; //t is for tile
-    int i;
-    if (!map)return-1;
-    if (!map->tileset)return-1;
-    if (!map->tilemap)return-1;
-}
-
 void tilemap_draw(TileMap *map)
 {
     int i;
