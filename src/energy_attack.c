@@ -3,7 +3,7 @@
 #include "energy_attack.h"
 #include "gfc_vector.h"
 #include "../include/gf2d_draw.h"
-#include "collision_ent.h"
+#include "collision.h"
 
 #include "stdio.h"
 
@@ -22,6 +22,8 @@ void energy_think(Entity* self)
 {
     //Vector2D direction;
     //int mx, my;
+    Entity* ent;
+    ent = collision_test_get_ent(self);
 
     if (!self)return;
     self->frame = (self->frame + 0.1);
@@ -33,6 +35,8 @@ void energy_think(Entity* self)
     }
     else
         self->position.x += 2;
+
+
 }
 
 void energy_update(Entity* self) {

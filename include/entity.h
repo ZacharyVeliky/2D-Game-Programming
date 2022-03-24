@@ -20,14 +20,19 @@ typedef struct ENTITY_S
     int         direction;     /**<More bounds*/
     int         health; //maybe the entity has health
     int         current_health; //maybe the entity has health
+    Bool        is_item;
+    Bool        is_collected;
+    int         item_id;
+    Bool        can_be_damaged;
+    Bool        is_enemy;
     void (*think)(struct ENTITY_S *self);   /**<a pointer to a think function for this entity*/
     void (*update)(struct ENTITY_S *self);   /**<a pointer to a think function for this entity*/
 }Entity;
 
 typedef struct
 {
-    Uint32 max_entities;            /**<how many entities exist*/
-    Entity* entity_list;           /**<a big ole list of entities*/
+    Uint32      max_entities;            /**<how many entities exist*/
+    Entity*     entity_list;           /**<a big ole list of entities*/
 }EntityManager;
 
 static EntityManager entity_manager = { 0 };
@@ -92,5 +97,5 @@ void entity_draw(Entity *entity);
  */
 void entity_free(Entity *entity);
 
-EntityManager* get_entity_manager_list();
+EntityManager *get_entity_manager_list();
 #endif

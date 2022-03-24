@@ -34,6 +34,8 @@
 //Bool collision_check_right(SDL_Rect player);
 
 int collision_test_all(Entity* player_col);
+int collision_test_all_tiles(Entity* player);
+Entity* collision_test_get_ent(Entity* player);
 
 #endif // !__COLLISION_H__
 

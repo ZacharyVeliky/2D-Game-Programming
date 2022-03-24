@@ -20,8 +20,8 @@ void tile_set_manager_init(Uint32 tileset_count);
 
 typedef struct
 {
-    TileSet*    tile_set_list;
     Uint32      tileset_count;
+    TileSet*    tile_set_list;
 }TileSetManager;
 
 static TileSetManager tile_set_manager = { 0 };
@@ -42,6 +42,6 @@ void tile_set_free(TileSet* tileset);
  */
 void tile_set_draw(TileSet* tileset, Uint32 tile, Vector2D position);
 
-TileSetManager* get_tile_manager_list();
+TileSetManager* get_tile_set_manager();
 
 #endif

@@ -50,18 +50,11 @@ void monster_think(Entity* self)
     //direction.y = my - self->position.y;
     //angle = vector2d_angle(direction) - 90;
     self->rotation.z = angle2;
-
-    keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
-    Entity* col = get_col_ent();
-
-    if (collision_rect_test(self->bounds, col->bounds)) {
-        slog("touch");
-    }
 }
 
 void monster_update(Entity* self) {
     if (!self)return;
-    if (health_current <= 0)
+    if (self->health <= 0)
         entity_free(self);
 
     rect.x = self->position.x - 20;
@@ -93,7 +86,6 @@ Entity* monster_ent_new(Vector2D position)
         return NULL;
     }
     ent->sprite = gf2d_sprite_load_all("images/space_bug_top.png", 128, 128, 16);
-    //ent->sprite = gf2d_sprite_load_all("images/player.png", 120, 115, 11);
     ent->think = monster_think;
     ent->update = monster_update;
     ent->draw_offset.x = -64;
@@ -101,6 +93,7 @@ Entity* monster_ent_new(Vector2D position)
     ent->rotation.x = 64;
     ent->rotation.y = 64;
     ent->bounds = rect;
+    ent->health = 2;
     vector2d_copy(ent->position, position);
     return ent;
 }

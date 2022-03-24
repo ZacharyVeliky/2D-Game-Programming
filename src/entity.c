@@ -165,7 +165,7 @@ void entity_free(Entity *entity)
     memset(entity,0,sizeof(Entity));
 }
 
-EntityManager* get_entity_manager_list() {
+EntityManager *get_entity_manager_list() {
     return &entity_manager;
 }
 

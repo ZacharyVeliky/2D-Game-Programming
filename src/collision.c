@@ -1,7 +1,7 @@
 #include "simple_logger.h"
 #include "collision.h"
 #include "gfc_vector.h"
-#include "../include/tile_set.h"
+#include "tile_set.h"
 
 typedef struct
 {
@@ -29,23 +29,6 @@ int collision_rect_test_left(SDL_Rect A, SDL_Rect B) {
     return 0;
 }
 
-int collision_test_all_ents(Entity* player) {
-    Entity* other;
-    int i;
-    EntityManager* e_man = get_entity_manager_list();
-    for (int i = 0; i < e_man->max_entities; i++) {
-        other = &e_man->entity_list[i];
-        if (player == other)
-            continue;
-        if (collision_rect_test_right(player->bounds, other->bounds))
-            return  3;
-        if (collision_rect_test_left(player->bounds, other->bounds))
-            return 1;
-        else
-            return 0;
-    }
-}
-
 Entity* collision_test_get_ent(Entity* player) {
     Entity* other;
     int i;
@@ -59,11 +42,28 @@ Entity* collision_test_get_ent(Entity* player) {
     }
 }
 
+int collision_test_all_ents(Entity* player) {
+    Entity* other;
+    EntityManager* e_man = get_entity_manager_list();
+    for (int i = 0; i < e_man->max_entities; i++) {
+        slog("%i", i);
+        other = &e_man->entity_list[i];
+        if (player == other)
+            continue;
+        if (collision_rect_test_right(player->bounds, other->bounds))
+            return  3;
+        if (collision_rect_test_left(player->bounds, other->bounds))
+            return 1;
+        else
+            return 0;
+    }
+}
+
 int collision_test_all_tiles(Entity* player) {
     TileSet* other;
-    int i;
-    TileSetManager* t_man = get_tile_manager_list();
+    TileSetManager* t_man = get_tile_set_manager();
     for (int i = 0; i < t_man->tileset_count; i++) {
+        
         other = &t_man->tile_set_list[i];
         if (player == other)
             continue;
@@ -82,7 +82,7 @@ int collision_test_all(Entity* player_col) {
     e = collision_test_all_ents(player_col);
     if (t != 0)
         return t;
-    else if (e != 0)
+    if (e != 0)
         return e;
     else
         return 0;

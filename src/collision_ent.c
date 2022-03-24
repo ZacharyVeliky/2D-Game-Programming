@@ -62,9 +62,4 @@ Entity* collision_ent_new(Vector2D position)
     return ent;
 }
 
-Entity* get_col_ent() {
-    if (col_ent)
-        return col_ent;
-}
-
 //eof

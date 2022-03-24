@@ -9,6 +9,7 @@
 #include "bug_ent.h"
 #include "player_ent.h"
 #include "collision_ent.h"
+#include "../include/ability_items.h"
 
 #include "tile_map.h"
 
@@ -27,9 +28,11 @@ int main(int argc, char * argv[])
 
     Sprite* health_background;
     Sprite* health;
-    Vector2D health_scale = { 0.2,0.2 };
-    Vector2D current_health_scale = { 0.2,0.2 };
+    Sprite* exp;
+    Vector2D health_scale = { 0.2,0.1 };
+    Vector2D current_health_scale = { 0.2,0.1 };
     float currnet_player_health;
+    float currnet_player_exp;
     
     /*program initializtion*/
     init_logger("gf2d.log");
@@ -44,7 +47,7 @@ int main(int argc, char * argv[])
         0);
     gf2d_graphics_set_frame_delay(16);
     gf2d_sprite_init(1024);
-    tile_set_manager_init(16);
+    tile_set_manager_init(32);
     entity_manager_init(1024);
     SDL_ShowCursor(SDL_DISABLE);
     
@@ -53,9 +56,11 @@ int main(int argc, char * argv[])
     mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16);
     health_background = gf2d_sprite_load_image("images/health_background.png");
     health = gf2d_sprite_load_image("images/health.png");
+    exp = gf2d_sprite_load_image("images/experience.png");
     //bug_ent_new(vector2d(500,300));
-    player_ent_new(vector2d(300,300));
-    collision_ent_new(vector2d(500, 310));
+    player_ent_new(vector2d(200,300));
+    collision_ent_new(vector2d(300, 310));
+    ability_item_new(vector2d(100, 300),1);
     tilemap = tilemap_load("levels/testlevel.json");
 
     /*main game loop*/
@@ -95,6 +100,26 @@ int main(int argc, char * argv[])
             gf2d_sprite_draw(
                 health,
                 vector2d(11.9, 11.9),
+                &current_health_scale,
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                NULL);
+
+            gf2d_sprite_draw(
+                health_background,
+                vector2d(10, 30),
+                &health_scale,
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                NULL);
+
+            gf2d_sprite_draw(
+                exp,
+                vector2d(11.9, 31.9),
                 &current_health_scale,
                 NULL,
                 NULL,

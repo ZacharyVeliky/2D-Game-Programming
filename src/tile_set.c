@@ -1,5 +1,6 @@
 #include "simple_logger.h"
-
+#include "gfc_vector.h"
+#include "gf2d_draw.h"
 #include "tile_set.h"
 
 void tile_set_manager_close()
@@ -122,7 +123,7 @@ void tile_set_draw(TileSet *tileset,Uint32 tile,Vector2D position)
     tileset->bounds.y = position.y;
     tileset->bounds.w = 32;
     tileset->bounds.h = 32;
-    Vector4D boxColor = { 255,255,255,255 };
+    Vector4D boxColor = { 255,0,0,255 };
     gf2d_sprite_draw(
         tileset->tile_image,        
         position,
@@ -135,7 +136,7 @@ void tile_set_draw(TileSet *tileset,Uint32 tile,Vector2D position)
     gf2d_draw_rect(tileset->bounds, boxColor);
 }
 
-TileSetManager* get_tile_manager_list()
+TileSetManager* get_tile_set_manager()
 {
     return &tile_set_manager;
 }

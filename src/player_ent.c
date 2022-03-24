@@ -3,7 +3,7 @@
 #include "player_ent.h"
 #include "gfc_vector.h"
 #include "../include/gf2d_draw.h"
-#include "collision_ent.h"
+#include "collision.h"
 #include "../include/energy_attack.h"
 #include "simple_json.h"
 
@@ -20,7 +20,7 @@ Vector2D player_position;
 int player_health;
 int player_health_current = 3;
 
-Bool has_energy_attack;
+Bool has_energy_attack = 0;
 
 Uint32 last_time;
 Uint32 attack_last_time;
@@ -52,24 +52,25 @@ void player_attack(atkNum) {
     }
 }
 
+void enable_blaster() {
+    has_energy_attack = true;
+    
+}
+
 void player_think(Entity* self)
 {
     //Vector2D direction;
     //int mx, my;
-    
+    Entity* ent;
     const Uint8* keys;
     if (!self)return;
     self->frame = (self->frame + 0.1);
     if (self->frame >= 5)self->frame = 0;
 
-    //SDL_GetMouseState(&mx, &my);
-    //direction.x = mx - self->position.x;
-    //direction.y = my - self->position.y;
-    //angle = vector2d_angle(direction) - 90;
     self->rotation.z = angle;
 
     keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
-    Entity* col = get_col_ent();
+    //Entity* col = get_col_ent();
 
     //if (collision_test_all(self)) {
     //    slog("touch");
@@ -115,10 +116,26 @@ void player_think(Entity* self)
             last_time = SDL_GetTicks();
         }
     }
-    if (keys[SDL_SCANCODE_SPACE] && SDL_GetTicks() >= attack_last_time + 1000) {
+    if (keys[SDL_SCANCODE_SPACE] && (SDL_GetTicks() >= attack_last_time + 1000) && has_energy_attack) {
         player_attack(1);
         attack_last_time = SDL_GetTicks();
     }
+    //collect items
+    ent = collision_test_get_ent(self);
+    if (ent) {
+        if (ent->is_item) {
+            switch (ent->item_id)
+            {
+            case 1:
+                ent->is_collected = true;
+                enable_blaster();
+                break;
+            default:
+                break;
+            }
+        }
+    }
+
 }
 
 void player_update(Entity* self) {
@@ -144,6 +161,8 @@ void player_update(Entity* self) {
     vector2d_copy(self->velocity, self->position);
     vector2d_copy(player_position, self->position);
 }
+
+
 
 Entity* player_ent_new(Vector2D position)
 {
