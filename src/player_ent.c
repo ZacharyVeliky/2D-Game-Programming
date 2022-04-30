@@ -87,17 +87,22 @@ void player_think(Entity* self)
 
     keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
     //Entity* col = get_col_ent();
-
+    Vector2D direction = { self->position.x, self->position.y };
+    Vector2D mag_position = { self->position.x, self->position.y };
     //if (collision_test_all(self)) {
     //    slog("touch");
     //}
 
-    if (keys[SDL_SCANCODE_W] && self->position.y > 586 && SDL_GetTicks() > last_jump_time + 100 && has_rocket_boots)
+    if (keys[SDL_SCANCODE_W] && self->position.y > 586 && has_rocket_boots)
     {
         // jump
         //fix later
-        vector2d_set_magnitude(&self->position.y, 1);
-        vector2d_copy(self->velocity, self->position);
+
+        if (SDL_GetTicks() > last_jump_time + 100) {
+            vector2d_set_magnitude(&self->position, self->position.y-1);
+            vector2d_copy(self->velocity, direction);
+        }
+
         last_jump_time = SDL_GetTicks();
     }
     if (keys[SDL_SCANCODE_D] && (collision_test_all_precise(self) != 3))
@@ -156,7 +161,7 @@ void player_think(Entity* self)
             }
         }
     }
-    if (!collision_test_all_tiles(self) && !collision_test_all_ents(self) && self->position.y < 586) {
+    if (!collision_test_all_tiles(self) && !collision_test_all_ents(self) ) { //&& self->position.y < 586
         self->position.y++;
     }
 }
@@ -206,7 +211,7 @@ Entity* player_ent_new(Vector2D position)
     ent->rotation.x = 64;
     ent->rotation.y = 64;
     ent->bounds = rect;
-    ent->is_player == true;
+    ent->is_player = true;
     vector2d_copy(ent->position, position);
 
     json = sj_load("entity/player.json");

@@ -120,6 +120,9 @@
     <ClInclude Include="..\include\ability_items.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Header.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="2D-Game-Programming.rc">

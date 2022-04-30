@@ -1,9 +1,13 @@
 #include <SDL.h>
 
+#include "chipmunk.h"
+
 #include "simple_logger.h"
 
 #include "gf2d_graphics.h"
 #include "gf2d_sprite.h"
+
+#include "chipmunk.h"
 
 #include "entity.h"
 #include "bug_ent.h"
@@ -15,6 +19,8 @@
 
 int main(int argc, char * argv[])
 {
+    
+    
     /*variable declarations*/
     int done = 0;
     const Uint8 * keys;
@@ -25,6 +31,8 @@ int main(int argc, char * argv[])
     Sprite *mouse;
     Vector4D mouseColor = { 255,100,255,200 };
     TileMap *tilemap;
+
+    //args for map editor goes here
 
     Sprite* health_background;
     Sprite* health;
