@@ -3,6 +3,7 @@
 
 #include <SDL.h>
 #include "gf2d_sprite.h"
+#include "chipmunk/chipmunk.h"
 
 typedef struct ENTITY_S
 {

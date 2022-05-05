@@ -120,13 +120,20 @@ void entity_manager_draw_all()
 
 void entity_draw(Entity *entity)
 {
+    //slog("begn draw");
     Vector2D drawPosition;
+    Vector2D flip = {0,0};
     if (entity == NULL)
     {
         slog("null pointer provided, nothing to do!");
         return;
     }
     if (entity->sprite == NULL)return;// nothing to draw
+    if (entity->is_mirror) {
+        flip.x = 1;
+        flip.y = 0;
+    }
+
     vector2d_add(drawPosition,entity->position,entity->draw_offset);
     gf2d_sprite_draw(
         entity->sprite,        
@@ -134,7 +141,7 @@ void entity_draw(Entity *entity)
         &entity->draw_scale,
         NULL,
         &entity->rotation,
-        NULL, //flip
+        &flip, //flip
         NULL,
         (Uint32)entity->frame);
 

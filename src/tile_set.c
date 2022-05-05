@@ -123,6 +123,8 @@ void tile_set_draw(TileSet *tileset,Uint32 tile,Vector2D position)
     tileset->bounds.y = position.y;
     tileset->bounds.w = 32;
     tileset->bounds.h = 32;
+    slog("%d %d", tileset->bounds.x,
+        tileset->bounds.y);
     Vector4D boxColor = { 255,0,0,255 };
     gf2d_sprite_draw(
         tileset->tile_image,        
@@ -140,7 +142,5 @@ TileSetManager* get_tile_set_manager()
 {
     return &tile_set_manager;
 }
-
-
 
 //eol

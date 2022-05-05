@@ -78,10 +78,13 @@ int collision_test_all_tiles(Entity* player) {
     TileSet* other;
     TileSetManager* t_man = get_tile_set_manager();
     for (int i = 0; i < t_man->tileset_count; i++) {
+
         other = &t_man->tile_set_list[i];
 
-        if (collision_rect_test(player->bounds, other->bounds))
-           return 1;
+        if (collision_rect_test(player->bounds, other->bounds)) {
+            slog("touch");
+            return 1;
+        }
     }
     return 0;
 }
@@ -106,6 +109,17 @@ int collision_test_all_tiles_precise(Entity* player) {
     return 0;
 }
 
+int collision_test_all(Entity* player_col) {
+    int t, e;
+    t = collision_test_all(player_col);
+    e = collision_test_all(player_col);
+    if (t != 0)
+        return t;
+    if (e != 0)
+        return e;
+    else
+        return 0;
+}
 int collision_test_all_precise(Entity* player_col) {
     int t, e;
     t = collision_test_all_tiles_precise(player_col);

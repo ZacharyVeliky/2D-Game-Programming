@@ -81,7 +81,7 @@ void player_think(Entity* self)
     const Uint8* keys;
     
     self->frame = (self->frame + 0.1);
-    if (self->frame >= 5)self->frame = 0;
+    if (self->frame >= 4)self->frame = 0;
 
     //self->rotation.z = angle;
 
@@ -112,6 +112,7 @@ void player_think(Entity* self)
         //vector2d_set_magnitude(&self->position.x, 3);
         //vector2d_copy(self->velocity, self->position);
         self->position.x += 1;
+        self->is_mirror = 0;
         angle = 0;
     }
     if (keys[SDL_SCANCODE_A] && (collision_test_all_precise(self) != 1))
@@ -121,6 +122,7 @@ void player_think(Entity* self)
         //vector2d_set_magnitude(&self->position.x, -3);
         //vector2d_copy(self->velocity, self->position);
         self->position.x -= 1;
+        self->is_mirror = 1;
         angle = 90;
     }
     else
@@ -161,7 +163,7 @@ void player_think(Entity* self)
             }
         }
     }
-    if (!collision_test_all_tiles(self) && !collision_test_all_ents(self) ) { //&& self->position.y < 586
+    if (!collision_test_all_tiles(self) && self->position.y < 586 && !collision_test_all_ents(self) ) { //
         self->position.y++;
     }
 }
@@ -201,13 +203,12 @@ Entity* player_ent_new(Vector2D position)
         slog("no space for more ents");
         return NULL;
     }
-    //ent->sprite = gf2d_sprite_load_all("images/space_bug_top.png", 128, 128, 16);
-    ent->sprite = gf2d_sprite_load_all("images/t_player.png", 99, 115, 5);
+    ent->sprite = gf2d_sprite_load_all("images/Player/player_idle.png", 16, 16, 4);
     ent->think = player_think;
     ent->update = player_update;
-    ent->draw_offset.x = -32;
-    ent->draw_offset.y = -32;
-    ent->draw_scale = vector2d(0.5, 0.5);
+    ent->draw_offset.x = -16;
+    ent->draw_offset.y = -16;
+    ent->draw_scale = vector2d(2, 2);
     ent->rotation.x = 64;
     ent->rotation.y = 64;
     ent->bounds = rect;

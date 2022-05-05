@@ -1,6 +1,6 @@
 #include "simple_logger.h"
 #include "time.h"
-#include "../include/monster.h"
+#include "../include/enemy.h"
 #include "gfc_vector.h"
 #include "../include/gf2d_draw.h"
 #include "collision_ent.h"
@@ -19,7 +19,7 @@ int health_current;
 
 Uint32 last_attack_time;
 
-void monster_damage(int damage) {
+void enemy_damage(int damage) {
     if (health_current >= 1)
         health_current -= damage;
     else
@@ -30,12 +30,12 @@ void attack() {
     return;
 }
 
-void monster_attack() {
+void enemy_attack() {
     if (SDL_GetTicks() >= last_attack_time)
         attack();
 }
 
-void monster_think(Entity* self)
+void enemy_think(Entity* self)
 {
     //Vector2D direction;
     //int mx, my;
@@ -52,7 +52,7 @@ void monster_think(Entity* self)
     self->rotation.z = angle2;
 }
 
-void monster_update(Entity* self) {
+void enemy_update(Entity* self) {
     if (!self)return;
     if (self->health <= 0)
         entity_free(self);
@@ -76,7 +76,7 @@ void monster_update(Entity* self) {
     //vector2d_copy(player_position, self->position);
 }
 
-Entity* monster_ent_new(Vector2D position)
+Entity* enemy_ent_new(Vector2D position)
 {
     Entity* ent;
     ent = entity_new();
@@ -85,9 +85,9 @@ Entity* monster_ent_new(Vector2D position)
         slog("no space for more ents");
         return NULL;
     }
-    ent->sprite = gf2d_sprite_load_all("images/space_bug_top.png", 128, 128, 16);
-    ent->think = monster_think;
-    ent->update = monster_update;
+    ent->sprite = gf2d_sprite_load_all("images/Enemies/fly/blue_fly_idle_.png", 128, 128, 16);
+    ent->think = enemy_think;
+    ent->update = enemy_update;
     ent->draw_offset.x = -64;
     ent->draw_offset.y = -64;
     ent->rotation.x = 64;

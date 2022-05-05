@@ -177,6 +177,36 @@
     <ClInclude Include="..\gfc\simple_logger\include\simple_logger.h" />
     <ClInclude Include="..\include\ability_items.h" />
     <ClInclude Include="..\include\bug_ent.h" />
+    <ClInclude Include="..\include\chipmunk\chipmunk.h" />
+    <ClInclude Include="..\include\chipmunk\chipmunk_ffi.h" />
+    <ClInclude Include="..\include\chipmunk\chipmunk_private.h" />
+    <ClInclude Include="..\include\chipmunk\chipmunk_structs.h" />
+    <ClInclude Include="..\include\chipmunk\chipmunk_types.h" />
+    <ClInclude Include="..\include\chipmunk\chipmunk_unsafe.h" />
+    <ClInclude Include="..\include\chipmunk\cpArbiter.h" />
+    <ClInclude Include="..\include\chipmunk\cpBB.h" />
+    <ClInclude Include="..\include\chipmunk\cpBody.h" />
+    <ClInclude Include="..\include\chipmunk\cpConstraint.h" />
+    <ClInclude Include="..\include\chipmunk\cpDampedRotarySpring.h" />
+    <ClInclude Include="..\include\chipmunk\cpDampedSpring.h" />
+    <ClInclude Include="..\include\chipmunk\cpGearJoint.h" />
+    <ClInclude Include="..\include\chipmunk\cpGrooveJoint.h" />
+    <ClInclude Include="..\include\chipmunk\cpHastySpace.h" />
+    <ClInclude Include="..\include\chipmunk\cpMarch.h" />
+    <ClInclude Include="..\include\chipmunk\cpPinJoint.h" />
+    <ClInclude Include="..\include\chipmunk\cpPivotJoint.h" />
+    <ClInclude Include="..\include\chipmunk\cpPolyline.h" />
+    <ClInclude Include="..\include\chipmunk\cpPolyShape.h" />
+    <ClInclude Include="..\include\chipmunk\cpRatchetJoint.h" />
+    <ClInclude Include="..\include\chipmunk\cpRobust.h" />
+    <ClInclude Include="..\include\chipmunk\cpRotaryLimitJoint.h" />
+    <ClInclude Include="..\include\chipmunk\cpShape.h" />
+    <ClInclude Include="..\include\chipmunk\cpSimpleMotor.h" />
+    <ClInclude Include="..\include\chipmunk\cpSlideJoint.h" />
+    <ClInclude Include="..\include\chipmunk\cpSpace.h" />
+    <ClInclude Include="..\include\chipmunk\cpSpatialIndex.h" />
+    <ClInclude Include="..\include\chipmunk\cpTransform.h" />
+    <ClInclude Include="..\include\chipmunk\cpVect.h" />
     <ClInclude Include="..\include\collision.h" />
     <ClInclude Include="..\include\collision_ent.h" />
     <ClInclude Include="..\include\energy_attack.h" />
@@ -184,7 +214,7 @@
     <ClInclude Include="..\include\gf2d_draw.h" />
     <ClInclude Include="..\include\gf2d_graphics.h" />
     <ClInclude Include="..\include\gf2d_sprite.h" />
-    <ClInclude Include="..\include\monster.h" />
+    <ClInclude Include="..\include\enemy.h" />
     <ClInclude Include="..\include\player_ent.h" />
     <ClInclude Include="..\include\resource.h" />
     <ClInclude Include="..\include\tile_set.h" />
@@ -196,6 +226,7 @@
     <ResourceCompile Include="2D-Game-Programming.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\chipmunk\chipmunk.c" />
     <ClCompile Include="..\gfc\simple_json\src\simple_json.c" />
     <ClCompile Include="..\gfc\simple_json\src\simple_json_array.c" />
     <ClCompile Include="..\gfc\simple_json\src\simple_json_error.c" />

@@ -1,5 +1,5 @@
-#ifndef __MONSTER_ENT_H__
-#define __MONSTER_ENT_H__
+#ifndef __ENEMY_ENT_H__
+#define __ENEMY_ENT_H__
 
 #include "entity.h"
 
@@ -8,6 +8,6 @@
  * @param position the location in the world to spawn the bug at
  * @returns NULL on error, or a pointer to the bug
  */
-Entity* monster_ent_new(Vector2D position);
+Entity* enemy_ent_new(Vector2D position);
 
 #endif

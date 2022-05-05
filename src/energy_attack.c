@@ -33,6 +33,7 @@ void energy_think(Entity* self)
     if (ent) {
         if (!ent->is_player) {
             ent->health -= 1;
+            entity_free(self);
         }
     }
     if (SDL_GetTicks() >= life + 1000)
