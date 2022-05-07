@@ -2,90 +2,119 @@
 #define __WINDOWS_H__
 
 #include <SDL.h>
+
 #include "gf2d_sprite.h"
+#include "gf2d_list.h"
+#include <simple_json.h>
 
-typedef struct window_S
+typedef struct Element_S Element;
+
+typedef enum
 {
-    Uint8       _inuse;     /**<this flag keeps track if this window is active or free to reassign*/
-    float       frame;      /**<current frame to draw*/
-    Vector2D    draw_offset;/**<draw position relative to the window position*/
-    Vector2D    position;   /**<where our window lives*/
-    Vector2D    velocity;   /**<how our window moves*/
-    Vector3D    rotation;   /**<how to rotate the sprite*/
-    Vector2D    draw_scale; /**<the scale factor for drawing the sprite*/
-    Vector2D    mins, maxs;  /**<describe the bounding box around this window*/
-    SDL_Rect    bounds;     /**<More bounds*/
-    //void (*think)(struct window_S* self);   /**<a pointer to a think function for this window*/
-    //void (*update)(struct window_S* self);   /**<a pointer to a think function for this window*/
-}window;
+    BE_TL,
+    BE_Top,
+    BE_TR,
+    BE_Left,
+    BE_Right,
+    BE_BL,
+    BE_Bottom,
+    BE_BR
+}BorderElements;
 
-typedef struct
+typedef struct Window_S
 {
-    Uint32      max_windows;            /**<how many entities exist*/
-    window* window_list;           /**<a big ole list of entities*/
-}windowManager;
-
-static windowManager window_manager = { 0 };
-
-/**
- * @brief initialize the internal window window_manager_init
- * @note must be called before other window functions
- * @param max_entities how many concurrent entities will be supported
- */
-void window_manager_init(Uint32 max_entities);
-
-/**
- * @brief draws all active entities to the screen
- */
-void window_manager_draw_all();
+    int _inuse;             /**<do not touch*/
+    int no_draw_generic;    /**<if true, do not use the generic window draw style*/
+    List* elements;         /**<all the components of the window*/
+    Sprite* background;     /**<background image*/
+    Sprite* border;         /**<border sprites*/
+    SDL_Rect dimensions;        /**<where on the screen*/
+    SDL_Rect canvas;            /**<Where within the window we draw things*/
+    Vector4D color;         /**<color to draw the window with*/
+    int blocks_input;       /**<if true, windows below will not be checked for input updates, but will update*/
+    int (*update)(struct Window_S* win, List* updateList);
+    int (*draw)(struct Window_S* win);
+    int (*free_data)(struct Window_S* win);
+    void* data;             /**<custom data*/
+}Window;
 
 /**
- * @brief runs any think function for all active entities
+ * @brief initialize the window system
+ * @param max_windows the limit of active windows
  */
-void window_manager_think_all();
-
+void windows_init(int max_windows);
 
 /**
- * @brief runs any think function for all active entities
+ * @brief draw all active windows
  */
-void window_update(window* ent);
-
+void windows_draw_all();
 
 /**
- * @brief runs any think function for all active entities
+ * @brief update all active windows
  */
-void window_manager_update_all();
-
+void windows_update_all();
 
 /**
- * @brief free all active entities
- * @note for use in level transitions.
+ * @brief get a new initialized window
+ * @return NULL on error or a window pointer
  */
-void window_manager_clear();
+Window* window_new();
 
 /**
- * @brief get a new empty window
- * @returns NULL on error, or a pointer to a blank window
+ * @brief load a window config from file and return a handle to it
+ * @param the filename of the config file
+ * @return NULL on error or a window pointer on success
  */
-window* window_new();
+Window* window_load(char* filename);
 
 /**
- * @brief get a new empty window
- * @returns NULL on error, or a pointer to a blank window
+ * @brief free a window no longer in use
+ * @param win the window to free
  */
-void window_update(window* ent);
+void window_free(Window* win);
 
 /**
- * @brief draws the given window
- * @param window the window to draw
+ * @brief add a gui element to the window
+ * @param win the window to add an element to
+ * @param w the element to add
  */
-void window_draw(window* window);
+void window_add_element(Window* win, Element* e);
 
 /**
- * @brief free the memory of an window
- * @param window the window to free
+ * @brief update a window and all of its elements
+ * @param win the window to update
  */
-void window_free(window* window);
+void window_update(Window* win);
 
-windowManager* get_window_manager_list();
+/**
+ * @brief draw a window to the screen.
+ * @note: This is done automatically for windows without a custom draw function or if that function returns 0
+ * @param win the window to draw
+ */
+void window_draw(Window* win);
+
+/**
+ * @brief draw a window given the border sprites and background image
+ * @param border the sprite containing the border elements
+ * @param bg the sprite to use for the background image (it will be stretch to match the rect
+ * @param rect the dimensions of the window to draw
+ * @param color the color to draw the window with
+ */
+void draw_window_border(Sprite* border, Sprite* bg, SDL_Rect rect, Vector4D color);
+
+/**
+ * @brief draw a generic window using the common border assets
+ * @param rect the dimensions of the window to draw
+ * @param color the color to draw the window with
+ */
+void draw_window_border_generic(SDL_Rect rect, Vector4D color);
+
+/**
+ * @brief get the element from the window with the matching id
+ * @param win the window to query
+ * @param id the index to search for
+ * @returns NULL on error or not found, a pointo to the element otherwise
+ */
+Element* window_get_element_by_id(Window* win, int id);
+
 #endif

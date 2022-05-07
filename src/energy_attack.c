@@ -29,14 +29,18 @@ void energy_think(Entity* self)
     //Vector2D direction;
     //int mx, my;
     Entity* ent;
+    //slog("about to colide");
     ent = collision_test_get_ent(self);
     if (ent) {
         if (!ent->is_player) {
-            ent->health -= 1;
-            entity_free(self);
+            if (ent->damage) {
+                ent->damage(ent, 1);
+                //slog("i did the damage");
+                entity_free(self);
+            }
         }
     }
-    if (SDL_GetTicks() >= life + 1000)
+    if (SDL_GetTicks() >= life + 999)
         entity_free(self);
 
     if (!self)return;

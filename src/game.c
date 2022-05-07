@@ -1,4 +1,5 @@
 #include <SDL.h>
+#include <SDL_ttf.h>
 
 #include "../include/chipmunk/chipmunk.h"
 
@@ -6,13 +7,14 @@
 
 #include "gf2d_graphics.h"
 #include "gf2d_sprite.h"
-#include "SDL_ttf.h"
+
 
 #include "entity.h"
 #include "bug_ent.h"
 #include "player_ent.h"
-#include "collision_ent.h"
+#include "enemy.h"
 #include "../include/ability_items.h"
+#include "../include/windows.h"
 
 #include "tile_map.h"
 
@@ -21,6 +23,16 @@ int main(int argc, char * argv[])
     /*cpVect gravity = cpv(0, -100);
     cpSpace* space = cpSpaceNew();
     cpSpaceSetGravity(space, gravity);*/
+
+    int is_editor;
+    //args for map editor
+    for (int i = 1; i < argc; i++)
+    {
+        if (strcmp(argv[i], "--editor") == 0)
+        {
+            is_editor = 1;
+        }
+    }
 
     /*variable declarations*/
     int done = 0;
@@ -35,8 +47,6 @@ int main(int argc, char * argv[])
     Vector4D mouseColor = { 255,100,255,200 };
     TileMap *tilemap;
 
-    //args for map editor goes here
-
     Sprite* health_background;
     Sprite* health;
     Sprite* exp;
@@ -49,6 +59,7 @@ int main(int argc, char * argv[])
 
     Uint32 spawn_time = 0;
     
+
     /*program initializtion*/
     init_logger("gf2d.log");
     slog("---==== BEGIN ====---");
@@ -60,10 +71,13 @@ int main(int argc, char * argv[])
         720,
         vector4d(0,0,0,255),
         0);
+    
     gf2d_graphics_set_frame_delay(16);
     gf2d_sprite_init(1024);
     tile_set_manager_init(64);
     entity_manager_init(512);
+
+    //windows_init(128);
 
     TTF_Init();
     TTF_Font* Elfboy = TTF_OpenFont("Fonts/Elfboyclassic.ttf",32);
@@ -78,8 +92,8 @@ int main(int argc, char * argv[])
     exp = gf2d_sprite_load_image("images/experience.png");
     //bug_ent_new(vector2d(500,300));
     player_ent_new(vector2d(500,587));
-    collision_ent_new(vector2d(700, 580));
-    collision_ent_new(vector2d(200, 580));
+    enemy_ent_new(vector2d(700, 580),1);
+    enemy_ent_new(vector2d(200, 580),1);
     ability_item_new(vector2d(400, 580),1);
     ability_item_new(vector2d(50, 580),2);
     tilemap = tilemap_load("levels/test.json");
@@ -87,8 +101,8 @@ int main(int argc, char * argv[])
     SDL_Color clrFg = { 0,0,255,0 };  // Blue ("Fg" is foreground)
     SDL_Color clrBg = { 0,0,0,0 };  // Blue ("Fg" is foreground)
     SDL_Surface* text = TTF_RenderText_Blended(Elfboy, "Courier 12", clrFg);
-    SDL_Rect rcDest = { 0,0,100,100 };
-    SDL_BlitSurface(text, NULL, gf2d_graphics_screen_convert, &rcDest);
+    SDL_Rect rcDest = { 500,0,200,200 };
+    SDL_BlitSurface(text, NULL, gf2d_graphics_screen_convert(&text), &rcDest);
     
 
     /*main game loop*/
@@ -100,8 +114,8 @@ int main(int argc, char * argv[])
         currnet_player_exp = player_exp_math();
         current_exp_scale.x = 0.2 * currnet_player_exp;
         if (SDL_GetTicks() >= spawn_time + 10000) {
-            collision_ent_new(vector2d(800, 580));
-            collision_ent_new(vector2d(900, 580));
+            enemy_ent_new(vector2d(800, 580),1);
+            enemy_ent_new(vector2d(900, 580),1);
             spawn_time = SDL_GetTicks();
         }
 
@@ -110,7 +124,7 @@ int main(int argc, char * argv[])
         keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
         /*update things here*/
         SDL_GetMouseState(&mx,&my);
-        mf+=0.1;
+        mf += (float)0.1;
         if (mf >= 16.0)mf = 0;
         if (!isDrawingMenu) {
             entity_manager_think_all();
@@ -124,7 +138,11 @@ int main(int argc, char * argv[])
                 sprite,
                 vector2d(0,0),
                 &bg_scale,
-                NULL, NULL, NULL, NULL, NULL);
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                NULL);
             // draw other game elements
             if (!isDrawingMenu) {
                 tilemap_draw(tilemap);
@@ -140,7 +158,7 @@ int main(int argc, char * argv[])
 
                 gf2d_sprite_draw(
                     health,
-                    vector2d(11.9, 11.9),
+                    vector2d((float)11.9, (float)11.9),
                     &current_health_scale,
                     NULL,
                     NULL,
@@ -171,19 +189,18 @@ int main(int argc, char * argv[])
                 entity_manager_draw_all();
                 //UI elements last
             }
-            
-            gf2d_sprite_draw(
-                mouse,
-                vector2d(mx,my),
-                NULL,
-                NULL,
-                NULL,
-                NULL,
-                &mouseColor,
-                (int)mf);    
-            
-            //(sText, gf2d_graphics_get_renderer, 0, 0);
-            
+            if (isDrawingMenu) {
+                gf2d_sprite_draw(
+                    mouse,
+                    vector2d(mx, my),
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    &mouseColor,
+                    (int)mf);
+            }
+                        
 
         gf2d_grahics_next_frame();// render current draw frame and skip to the next frame
         

@@ -120,9 +120,6 @@
     <ClInclude Include="..\include\ability_items.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Header.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\chipmunk\chipmunk.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -211,6 +208,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\chipmunk\cpVect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\windows.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\gf2d_elements.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\gf2d_list.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -304,13 +310,25 @@
     <ClCompile Include="..\src\energy_attack.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\monster.c">
+    <ClCompile Include="..\src\enemy.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\ability_items.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\chipmunk\chipmunk.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\windows.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\gf2d_elements.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\gf2d_list.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\gf2d_color.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

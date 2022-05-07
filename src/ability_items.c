@@ -38,6 +38,7 @@ void ability_update(Entity* self) {
     //gf2d_draw_rect(rect2, boxColor);
     self->bounds = rect;
     if (self->is_collected) {
+        slog("yoink");
         entity_free(self);
     }
 }
@@ -50,7 +51,8 @@ Entity* ability_item_new(Vector2D position, int item_id)
     {
         slog("no space for more ents");
         return NULL;
-    }switch (item_id)
+    }
+    switch (item_id)
     {
     case 1: ent->sprite = gf2d_sprite_load_all("images/Items/wand_of_energy.png", 1000, 1000, 4); 
             ent->draw_offset.x = 20;//-172

@@ -26,10 +26,21 @@ int current_exp = 0;
 
 Bool has_energy_attack = 0;
 Bool has_rocket_boots = 0;
+Bool has_dash = 0;
 
 Uint32 last_time;
-Uint32 attack_last_time;
+Uint32 last_attack_time;
 Uint32 last_jump_time;
+Uint32 last_dash_time;
+
+typedef enum {
+    IDLE,
+    WALKING,
+    JUMPING,
+    FALLING
+} MovementState;
+
+MovementState playerMovement = IDLE;
 
 float player_health_math() {
     float ret = (float)player_health_current / (float)player_health;
@@ -52,20 +63,35 @@ void player_get_exp(int exp) {
     current_exp += exp;
 }
 
-void player_damage(int damage) {
-    if (player_health_current >= 1) {
-        player_health_current -= damage;
-        if (player_health_current <= 0)
+void player_damage(Entity* self, int damage) {
+    if (self->current_health >= 1) {
+        self->current_health -= damage;
+        if (self->current_health <= 0)
             slog("You Died");
     }
     else
         slog("You Died");
 }
 
+void smack(Vector2D start, int owner_dir, Entity* owner) {
+    NULL;
+}
+
 void player_attack(int atkNum, Entity* player) {
     switch (atkNum)
     {
-    case 1: energy_attack(player_position, angle, player);
+
+    case 1: slog("Fire Ball");
+        energy_attack(player_position, angle, player);
+        break;
+
+    case 2: slog("Smack");
+        smack(player_position, player->is_mirror, player);
+        break;
+
+    case 3: slog("Dash");
+        energy_attack(player_position, angle, player);
+        break;
     default:
         break;
     }
@@ -80,14 +106,42 @@ void player_think(Entity* self)
     Entity* ent;
     const Uint8* keys;
     
-    self->frame = (self->frame + 0.1);
-    if (self->frame >= 4)self->frame = 0;
+    switch (playerMovement)
+    {
+    case IDLE: 
+        self->frame = (self->frame + 0.1);
+        if (self->frame >= 4)self->frame = 0;
+        break;
+
+    case WALKING:
+        if (self->frame < 5 || self->frame >10)
+            self->frame = 5;
+        self->frame = (self->frame + 0.1);
+        if (self->frame >= 10)self->frame = 5;
+        break;
+
+    case JUMPING:
+        self->frame = (self->frame + 0.1);
+        if (self->frame >= 4)self->frame = 0;
+        break;
+
+    case FALLING:
+        self->frame = (self->frame + 0.1);
+        if (self->frame >= 4)self->frame = 0; 
+        break;
+
+    default:
+        self->frame = (self->frame + 0.1);
+        if (self->frame >= 4)self->frame = 0;
+        break;
+    }
+    
 
     //self->rotation.z = angle;
 
     keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
     //Entity* col = get_col_ent();
-    Vector2D direction = { self->position.x, self->position.y };
+    Vector2D direction = { self->position.y, self->position.y };
     Vector2D mag_position = { self->position.x, self->position.y };
     //if (collision_test_all(self)) {
     //    slog("touch");
@@ -97,6 +151,7 @@ void player_think(Entity* self)
     {
         // jump
         //fix later
+        playerMovement = JUMPING;
 
         if (SDL_GetTicks() > last_jump_time + 100) {
             vector2d_set_magnitude(&self->position, self->position.y-1);
@@ -107,42 +162,42 @@ void player_think(Entity* self)
     }
     if (keys[SDL_SCANCODE_D] && (collision_test_all_precise(self) != 3))
     {
-        // Right
-        //fix later
-        //vector2d_set_magnitude(&self->position.x, 3);
-        //vector2d_copy(self->velocity, self->position);
+        playerMovement = WALKING;
+        vector2d_set_magnitude(&direction, 3);
+        vector2d_copy(self->velocity, direction);
         self->position.x += 1;
         self->is_mirror = 0;
         angle = 0;
     }
     if (keys[SDL_SCANCODE_A] && (collision_test_all_precise(self) != 1))
     {
-        // Left
-        //fix later
-        //vector2d_set_magnitude(&self->position.x, -3);
-        //vector2d_copy(self->velocity, self->position);
+        playerMovement = WALKING;
         self->position.x -= 1;
         self->is_mirror = 1;
         angle = 90;
     }
     else
     {
-        vector2d_scale(self->velocity, self->velocity, 0.5);
-        if (vector2d_magnitude(self->velocity) < 0.05)
-        {
-            vector2d_clear(self->velocity);
-        }
+        playerMovement = IDLE;
     }
     if (keys[SDL_SCANCODE_K]) {
         if (SDL_GetTicks() >= last_time + 1000) {
             //slog("time: %zu", last_time);
-            player_damage(1);
+            player_damage(self, 1);
             last_time = SDL_GetTicks();
         }
     }
-    if (keys[SDL_SCANCODE_SPACE] && (SDL_GetTicks() >= attack_last_time + 1000) && has_energy_attack) {
+    if (keys[SDL_SCANCODE_SPACE] && (SDL_GetTicks() >= last_attack_time + 1000) && has_energy_attack) {
         player_attack(1, self);
-        attack_last_time = SDL_GetTicks();
+        last_attack_time = SDL_GetTicks();
+    }
+    if (keys[SDL_SCANCODE_F] && (SDL_GetTicks() >= last_attack_time + 1000) && has_energy_attack) {
+        player_attack(2, self);
+        last_attack_time = SDL_GetTicks();
+    }
+    if (keys[SDL_SCANCODE_LSHIFT] && (SDL_GetTicks() >= last_dash_time + 500) && has_dash) {
+        player_attack(3, self);
+        last_attack_time = SDL_GetTicks();
     }
     //collect items
     ent = collision_test_get_ent(self);
@@ -203,9 +258,10 @@ Entity* player_ent_new(Vector2D position)
         slog("no space for more ents");
         return NULL;
     }
-    ent->sprite = gf2d_sprite_load_all("images/Player/player_idle.png", 16, 16, 4);
+    ent->sprite = gf2d_sprite_load_all("images/Player/player.png", 16, 16, 10);
     ent->think = player_think;
     ent->update = player_update;
+    ent->damage = player_damage;
     ent->draw_offset.x = -16;
     ent->draw_offset.y = -16;
     ent->draw_scale = vector2d(2, 2);
@@ -217,8 +273,8 @@ Entity* player_ent_new(Vector2D position)
 
     json = sj_load("entity/player.json");
     sj_get_integer_value(sj_object_get_value(json, "base_health"), &player_health);
-    slog("base: %d", player_health);   
-    slog("current: %d", player_health_current);
+    //slog("base: %d", player_health);   
+    //slog("current: %d", player_health_current);
     sj_free(json);
     return ent;
 }

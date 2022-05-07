@@ -118,6 +118,9 @@ void entity_manager_draw_all()
     }
 }
 
+Bool enable_draw = 0;
+
+
 void entity_draw(Entity *entity)
 {
     //slog("begn draw");
@@ -155,7 +158,8 @@ void entity_draw(Entity *entity)
     rectBoxColor.y = 255;
     rectBoxColor.z = 255;
     rectBoxColor.w = 255;
-    gf2d_draw_rect(entity->bounds, rectBoxColor);
+    if (enable_draw)
+        gf2d_draw_rect(entity->bounds, rectBoxColor);
 }
 
 void entity_free(Entity *entity)
@@ -172,8 +176,12 @@ void entity_free(Entity *entity)
     memset(entity,0,sizeof(Entity));
 }
 
+// all my crap
+
 EntityManager *get_entity_manager_list() {
     return &entity_manager;
 }
+
+
 
 // eof
