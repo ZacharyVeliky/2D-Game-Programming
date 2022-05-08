@@ -217,6 +217,7 @@
     <ClInclude Include="..\include\enemy.h" />
     <ClInclude Include="..\include\player_ent.h" />
     <ClInclude Include="..\include\resource.h" />
+    <ClInclude Include="..\include\smack.h" />
     <ClInclude Include="..\include\tile_set.h" />
     <ClInclude Include="..\include\tile_map.h" />
     <ClInclude Include="..\include\univ.h" />
@@ -255,6 +256,7 @@
     <ClCompile Include="..\src\gf2d_sprite.c" />
     <ClCompile Include="..\src\enemy.c" />
     <ClCompile Include="..\src\player_ent.c" />
+    <ClCompile Include="..\src\smack.c" />
     <ClCompile Include="..\src\tile_map.c" />
     <ClCompile Include="..\src\tile_set.c" />
   </ItemGroup>

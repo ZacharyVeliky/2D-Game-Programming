@@ -9,6 +9,6 @@
  * @param position the location in the world to spawn the bug at
  * @returns NULL on error, or a pointer to the bug
  */
-Entity* energy_attack_new(Vector2D position);
+Entity* energy_attack_new(Vector2D position, int dir);
 void energy_attack(Vector2D start, int dir);
 #endif

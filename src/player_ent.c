@@ -1,11 +1,13 @@
 #include "simple_logger.h"
-//#include "time.h"
 #include "player_ent.h"
 #include "gfc_vector.h"
 #include "gfc_audio.h"
 #include "../include/gf2d_draw.h"
 #include "collision.h"
+
 #include "../include/energy_attack.h"
+#include "../include/smack.h"
+
 #include "simple_json.h"
 
 #include "stdio.h"
@@ -14,7 +16,6 @@ SJson* json;
 
 //double grav = -9.8;
 SDL_Rect rect;
-
 
 int player_health;
 int player_health_current = 3;
@@ -26,6 +27,9 @@ int current_exp = 0;
 Bool has_energy_attack = 0;
 Bool has_rocket_boots = 0;
 Bool has_dash = 0;
+Bool has_smack = 1;
+
+Bool can_cahnge_anim = true;
 
 Uint32 last_time;
 Uint32 last_attack_time;
@@ -33,7 +37,6 @@ Uint32 last_jump_time;
 Uint32 last_dash_time;
 
 Sound* fireball;
-
 
 typedef enum {
     IDLE,
@@ -76,10 +79,6 @@ void player_damage(Entity* self, int damage) {
         slog("You Died");
 }
 
-void smack(Vector2D start, int owner_dir) {
-    NULL;
-}
-
 void player_attack(int atkNum, Entity* player) {
     switch (atkNum)
     {
@@ -89,7 +88,7 @@ void player_attack(int atkNum, Entity* player) {
         break;
 
     case 2: slog("Smack");
-        smack(player->position, player->is_mirror);
+        smack_attack(player->position, angle);
         break;
 
     case 3: slog("Dash");
@@ -143,8 +142,9 @@ void player_think(Entity* self)
     else
     {
         self->frame = (self->frame + 0.1);
-        if (self->frame >= 4) { 
+        if (self->frame >= 14) { 
             self->frame = 0;
+            can_cahnge_anim = true;
             playerMovement = IDLE;
         };
     }
@@ -170,21 +170,24 @@ void player_think(Entity* self)
     }
     if (keys[SDL_SCANCODE_D] && (collision_test_all_precise(self) != 3))
     {
-        playerMovement = WALKING;
+        if (can_cahnge_anim)
+            playerMovement = WALKING;
         self->position.x += 1;
         self->is_mirror = 0;
         angle = 0;
     }
     if (keys[SDL_SCANCODE_A] && (collision_test_all_precise(self) != 1))
     {
-        playerMovement = WALKING;
+        if (can_cahnge_anim)
+            playerMovement = WALKING;
         self->position.x -= 1;
         self->is_mirror = 1;
         angle = 90;
     }
     else
     {
-        playerMovement = IDLE;
+        if (can_cahnge_anim)
+            playerMovement = IDLE;
     }
     if (keys[SDL_SCANCODE_K]) {
         if (SDL_GetTicks() >= last_time + 1000) {
@@ -198,8 +201,10 @@ void player_think(Entity* self)
         player_attack(1, self);
         last_attack_time = SDL_GetTicks();
     }
-    if (keys[SDL_SCANCODE_F] && (SDL_GetTicks() >= last_attack_time + 1000) && has_energy_attack) {
+    if (keys[SDL_SCANCODE_F] && (SDL_GetTicks() >= last_attack_time + 250) && has_smack) {
         playerMovement = ATTACKING;
+        self->frame = 11;
+        can_cahnge_anim = false;
         player_attack(2, self);
         last_attack_time = SDL_GetTicks();
     }
@@ -266,7 +271,7 @@ Entity* player_ent_new(Vector2D position)
         slog("no space for more ents");
         return NULL;
     }
-    ent->sprite = gf2d_sprite_load_all("images/Player/player.png", 16, 16, 10);
+    ent->sprite = gf2d_sprite_load_all("images/Player/player.png", 16, 16, 14);
     ent->think = player_think;
     ent->update = player_update;
     ent->damage = player_damage;

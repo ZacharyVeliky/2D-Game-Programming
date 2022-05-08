@@ -54,21 +54,25 @@ Entity* ability_item_new(Vector2D position, int item_id)
     }
     switch (item_id)
     {
-    case 1: ent->sprite = gf2d_sprite_load_all("images/Items/wand_of_energy.png", 1000, 1000, 4); 
+    case 1: ent->sprite = gf2d_sprite_load_all("images/Items/wand_of_energy.png", 500, 500, 4); 
             ent->draw_offset.x = 20;//-172
             ent->draw_offset.y = -20;//-167
-            ent->draw_scale = vector2d(0.05, 0.05);
+            ent->draw_scale = vector2d(0.1, 0.1);
         break;
     case 2: ent->sprite = gf2d_sprite_load_all("images/Items/rocket_boots.png", 256, 256, 4); 
             ent->draw_offset.x = +25;//-172
             ent->draw_offset.y = -20;//-167
             ent->draw_scale = vector2d(0.2, 0.2);
             break;
-    case 3: ent->sprite = gf2d_sprite_load_all("images/bomb.png", 32, 32, 4); 
-            
+    case 3: ent->sprite = gf2d_sprite_load_all("images/wand_of_smacking.png", 500, 500, 4); 
+        ent->draw_offset.x = 20;//-172
+        ent->draw_offset.y = -20;//-167
+        ent->draw_scale = vector2d(0.1, 0.1);
         break;
-    case 4: ent->sprite = gf2d_sprite_load_all("images/laser_gun.png", 32, 32, 4); break;
-    case 5: ent->sprite = gf2d_sprite_load_all("images/laser_gun.png", 32, 32, 4); break;
+    case 4: ent->sprite = gf2d_sprite_load_all("images/laser_gun.png", 32, 32, 4); 
+        break;
+    case 5: ent->sprite = gf2d_sprite_load_all("images/laser_gun.png", 32, 32, 4); 
+        break;
 
     default:ent->sprite = gf2d_sprite_load_all("images/laser_gun.png", 32, 32, 4);
             ent->draw_offset.x = -20;//-172

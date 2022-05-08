@@ -5,26 +5,15 @@
 #include "../include/gf2d_draw.h"
 #include "collision.h"
 
-#include "stdio.h"
-
-//SDL_Rect rect;
-int dir;
-
-Vector2D scale = { 2,2 };
-
-Uint32 life = 0;
+Entity* energy_attack_new(start, owner_dir);
 
 
 void energy_attack(Vector2D start, int owner_dir) {
-    dir = owner_dir;
-    energy_attack_new(start);
-    
+    energy_attack_new(start, owner_dir);
 }
 
 void energy_think(Entity* self)
 {
-    //Vector2D direction;
-    //int mx, my;
     Entity* ent;
     
     if (!self)return;
@@ -32,17 +21,16 @@ void energy_think(Entity* self)
     //slog("about to colide");
     slog("i shot");
     ent = collision_test_get_ent(self);
-    if (ent) {
+    if (ent != NULL) {
         if (!ent->is_player) {
             if (ent->damage) {
                 ent->damage(ent, 1);
-                slog("i did the damage");
                 entity_free(self);
             }
         }
     }
 
-    if (SDL_GetTicks() >= life + 999)
+    if (SDL_GetTicks() >= self->life + 999)
         entity_free(self);
 
     self->frame = (self->frame + 0.1);
@@ -54,8 +42,6 @@ void energy_think(Entity* self)
     }
     else
         self->position.x += 2;
-
-
 }
 
 void energy_update(Entity* self) {
@@ -63,7 +49,7 @@ void energy_update(Entity* self) {
 
     SDL_Rect rect2;
     rect2.x = self->position.x + 32;
-    if (dir == 90)
+    if (self->direction == 90)
         rect2.x = self->position.x - 64;
     rect2.y = self->position.y - 15;
     rect2.w = 32;
@@ -71,7 +57,7 @@ void energy_update(Entity* self) {
     self->bounds = rect2;
 }
 
-Entity* energy_attack_new(Vector2D position)
+Entity* energy_attack_new(Vector2D position, int dir)
 {
     Entity* ent;
     ent = entity_new();
@@ -87,11 +73,10 @@ Entity* energy_attack_new(Vector2D position)
     ent->draw_offset.y = -32;
     ent->rotation.x = 16;
     ent->rotation.y = 16;
-    //ent->bounds = rect;
     ent->direction = dir;
-    ent->draw_scale = scale;
+    ent->draw_scale = vector2d(2, 2);
     vector2d_copy(ent->position, position);
-    life = SDL_GetTicks();
+    ent->life = SDL_GetTicks();
     return ent;
 }
 

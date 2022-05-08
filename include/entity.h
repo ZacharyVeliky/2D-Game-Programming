@@ -29,6 +29,7 @@ typedef struct ENTITY_S
     Bool        is_mirror;
     Bool        is_invincible;
     Uint32      iframes;
+    Uint32      life;
     void (*think)(struct ENTITY_S *self);   /**<a pointer to a think function for this entity*/
     void (*update)(struct ENTITY_S *self);   /**<a pointer to an update function for this entity*/
     void (*damage)(struct ENTITY_S *self, int dam);   /**<a pointer to a damage function for this entity*/

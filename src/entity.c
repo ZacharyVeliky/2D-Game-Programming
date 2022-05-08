@@ -123,7 +123,6 @@ Bool enable_draw = 0;
 
 void entity_draw(Entity *entity)
 {
-    //slog("begn draw");
     Vector2D drawPosition;
     Vector2D flip = {0,0};
     if (entity == NULL)
@@ -148,11 +147,6 @@ void entity_draw(Entity *entity)
         NULL,
         (Uint32)entity->frame);
 
-    //SDL_Rect rect;
-    //rect.x = entity->position.x-20;
-    //rect.y = entity->position.y-20;
-    //rect.w = 40;
-    //rect.h = 40;
     Vector4D rectBoxColor;
     rectBoxColor.x = 255;
     rectBoxColor.y = 255;
@@ -181,7 +175,5 @@ void entity_free(Entity *entity)
 EntityManager *get_entity_manager_list() {
     return &entity_manager;
 }
-
-
 
 // eof

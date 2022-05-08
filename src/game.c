@@ -84,11 +84,8 @@ int main(int argc, char * argv[])
     Sound *bgm = gfc_sound_load("Sound/bgm.wav", 0.5, 1);
     gfc_sound_play(bgm, -1, 0.25, 1, 1);
 
-    gf2d_text_init("Fonts/Elfboyclassic.ttf");
+    //gf2d_text_init("Fonts/Elfboyclassic.ttf");
     //windows_init(128);
-
-    //TTF_Init();
-    //TTF_Font* Elfboy = TTF_OpenFont("Fonts/Elfboyclassic.ttf",32);
 
     SDL_ShowCursor(SDL_DISABLE);
     
@@ -100,8 +97,8 @@ int main(int argc, char * argv[])
     exp = gf2d_sprite_load_image("images/experience.png");
     
     player_ent_new(vector2d(500,587));
-    enemy_ent_new(vector2d(700, 580),1);
-    enemy_ent_new(vector2d(200, 580),1);
+    enemy_ent_new(vector2d(700, 580));
+    enemy_ent_new(vector2d(200, 580));
     ability_item_new(vector2d(400, 580),1);
     ability_item_new(vector2d(50, 580),2);
     tilemap = tilemap_load("levels/test.json");
@@ -123,8 +120,8 @@ int main(int argc, char * argv[])
         currnet_player_exp = player_exp_math();
         current_exp_scale.x = 0.2 * currnet_player_exp;
         if (SDL_GetTicks() >= spawn_time + 10000) {
-            enemy_ent_new(vector2d(800, 580),1);
-            enemy_ent_new(vector2d(900, 580),1);
+            enemy_ent_new(vector2d(800, 580));
+            enemy_ent_new(vector2d(900, 580));
             spawn_time = SDL_GetTicks();
         }
 

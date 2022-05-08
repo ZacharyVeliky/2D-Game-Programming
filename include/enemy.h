@@ -8,6 +8,6 @@
  * @param position the location in the world to spawn the bug at
  * @returns NULL on error, or a pointer to the bug
  */
-Entity* enemy_ent_new(Vector2D position, int enemyID);
+Entity* enemy_ent_new(Vector2D position);
 
 #endif
