@@ -210,15 +210,6 @@
     <ClInclude Include="..\include\chipmunk\cpVect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\windows.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\gf2d_elements.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\gf2d_list.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="2D-Game-Programming.rc">
@@ -319,16 +310,7 @@
     <ClCompile Include="..\chipmunk\chipmunk.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\windows.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\gf2d_elements.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\gf2d_list.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\gf2d_color.c">
+    <ClCompile Include="..\gfc\src\gfc_color.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,7 +1,8 @@
 #include "simple_logger.h"
-#include "time.h"
+//#include "time.h"
 #include "player_ent.h"
 #include "gfc_vector.h"
+#include "gfc_audio.h"
 #include "../include/gf2d_draw.h"
 #include "collision.h"
 #include "../include/energy_attack.h"
@@ -11,15 +12,13 @@
 
 SJson* json;
 
-float angle = 0;
-float grav = -9.8;
+//double grav = -9.8;
 SDL_Rect rect;
 
-Vector2D player_position;
 
 int player_health;
 int player_health_current = 3;
-
+int angle = 0;
 int level = 1;
 int req_exp = 3;
 int current_exp = 0;
@@ -32,6 +31,9 @@ Uint32 last_time;
 Uint32 last_attack_time;
 Uint32 last_jump_time;
 Uint32 last_dash_time;
+
+Sound* fireball;
+
 
 typedef enum {
     IDLE,
@@ -74,7 +76,7 @@ void player_damage(Entity* self, int damage) {
         slog("You Died");
 }
 
-void smack(Vector2D start, int owner_dir, Entity* owner) {
+void smack(Vector2D start, int owner_dir) {
     NULL;
 }
 
@@ -82,16 +84,16 @@ void player_attack(int atkNum, Entity* player) {
     switch (atkNum)
     {
 
-    case 1: slog("Fire Ball");
-        energy_attack(player_position, angle, player);
+    case 1: //slog("Fire Ball");
+        energy_attack(player->position, angle);
         break;
 
     case 2: slog("Smack");
-        smack(player_position, player->is_mirror, player);
+        smack(player->position, player->is_mirror);
         break;
 
     case 3: slog("Dash");
-        energy_attack(player_position, angle, player);
+        energy_attack(player->position, angle);
         break;
     default:
         break;
@@ -107,52 +109,51 @@ void player_think(Entity* self)
     Entity* ent;
     const Uint8* keys;
     
-    switch (playerMovement)
+    if (playerMovement != ATTACKING) {
+        switch (playerMovement)
+        {
+        case IDLE:
+            self->frame = (self->frame + 0.1);
+            if (self->frame >= 4)self->frame = 0;
+            break;
+
+        case WALKING:
+            if (self->frame < 5 || self->frame >10)
+                self->frame = 5;
+            self->frame = (self->frame + 0.1);
+            if (self->frame >= 10)self->frame = 5;
+            break;
+
+        case JUMPING:
+            self->frame = (self->frame + 0.1);
+            if (self->frame >= 4)self->frame = 0;
+            break;
+
+        case FALLING:
+            self->frame = (self->frame + 0.1);
+            if (self->frame >= 4)self->frame = 0;
+            break;
+
+        default:
+            self->frame = (self->frame + 0.1);
+            if (self->frame >= 4)self->frame = 0;
+            break;
+        }
+    }
+    else
     {
-    case IDLE: 
         self->frame = (self->frame + 0.1);
-        if (self->frame >= 4)self->frame = 0;
-        break;
-
-    case WALKING:
-        if (self->frame < 5 || self->frame >10)
-            self->frame = 5;
-        self->frame = (self->frame + 0.1);
-        if (self->frame >= 10)self->frame = 5;
-        break;
-
-    case JUMPING:
-        self->frame = (self->frame + 0.1);
-        if (self->frame >= 4)self->frame = 0;
-        break;
-
-    case FALLING:
-        self->frame = (self->frame + 0.1);
-        if (self->frame >= 4)self->frame = 0; 
-        break;
-
-    case ATTACKING:
-        self->frame = (self->frame + 0.1);
-        if (self->frame >= 4)self->frame = 0;
-
-        break;
-
-    default:
-        self->frame = (self->frame + 0.1);
-        if (self->frame >= 4)self->frame = 0;
-        break;
+        if (self->frame >= 4) { 
+            self->frame = 0;
+            playerMovement = IDLE;
+        };
     }
     
 
-    //self->rotation.z = angle;
-
     keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
-    //Entity* col = get_col_ent();
     Vector2D direction = { self->position.y, self->position.y };
     Vector2D mag_position = { self->position.x, self->position.y };
-    //if (collision_test_all(self)) {
-    //    slog("touch");
-    //}
+
 
     if (keys[SDL_SCANCODE_W] && self->position.y > 586 && has_rocket_boots)
     {
@@ -193,6 +194,7 @@ void player_think(Entity* self)
         }
     }
     if (keys[SDL_SCANCODE_SPACE] && (SDL_GetTicks() >= last_attack_time + 1000) && has_energy_attack) {
+        gfc_sound_play(fireball, 0, 0.25, 2, 2);
         player_attack(1, self);
         last_attack_time = SDL_GetTicks();
     }
@@ -224,7 +226,7 @@ void player_think(Entity* self)
             }
         }
     }
-    if (!collision_test_all_tiles(self) && self->position.y < 586 && !collision_test_all_ents(self) ) { //
+    if (!collision_test_all_tiles(self) && self->position.y < 592 && !collision_test_all_ents(self) ) { //
         self->position.y++;
     }
 }
@@ -235,10 +237,10 @@ void player_update(Entity* self) {
     //direction.x = 0 - self->position.x;
     //direction.y = 0 - self->position.y;
 
-    rect.x = self->position.x - 20;
-    rect.y = self->position.y - 20;
-    rect.w = 40;
-    rect.h = 40;
+    rect.x = self->position.x - 16;
+    rect.y = self->position.y - 16;
+    rect.w = 32;
+    rect.h = 32;
     Vector4D boxColor;
     boxColor.x = 255;
     boxColor.y = 255;
@@ -248,9 +250,9 @@ void player_update(Entity* self) {
     self->bounds = rect;
     //slog("A.x %i", self->bounds.x);
     //slog("A.y %i", self->bounds.y);
-    vector2d_set_magnitude(&self->velocity, grav);
-    vector2d_copy(self->velocity, self->position);
-    vector2d_copy(player_position, self->position);
+    //vector2d_set_magnitude(&self->velocity, grav);
+    //vector2d_copy(self->velocity, self->position);
+    //vector2d_copy(player_position, self->position);
 }
 
 
@@ -279,9 +281,8 @@ Entity* player_ent_new(Vector2D position)
 
     json = sj_load("entity/player.json");
     sj_get_integer_value(sj_object_get_value(json, "base_health"), &player_health);
-    //slog("base: %d", player_health);   
-    //slog("current: %d", player_health_current);
     sj_free(json);
+    fireball = gfc_sound_load("Sound/fireball.wav", 0.5, 1);
     return ent;
 }
 

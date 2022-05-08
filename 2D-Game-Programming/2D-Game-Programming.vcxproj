@@ -212,9 +212,7 @@
     <ClInclude Include="..\include\energy_attack.h" />
     <ClInclude Include="..\include\entity.h" />
     <ClInclude Include="..\include\gf2d_draw.h" />
-    <ClInclude Include="..\include\gf2d_elements.h" />
     <ClInclude Include="..\include\gf2d_graphics.h" />
-    <ClInclude Include="..\include\gf2d_list.h" />
     <ClInclude Include="..\include\gf2d_sprite.h" />
     <ClInclude Include="..\include\enemy.h" />
     <ClInclude Include="..\include\player_ent.h" />
@@ -222,7 +220,6 @@
     <ClInclude Include="..\include\tile_set.h" />
     <ClInclude Include="..\include\tile_map.h" />
     <ClInclude Include="..\include\univ.h" />
-    <ClInclude Include="..\include\windows.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="2D-Game-Programming.rc" />
@@ -239,6 +236,7 @@
     <ClCompile Include="..\gfc\simple_logger\src\simple_logger.c" />
     <ClCompile Include="..\gfc\src\gfc_audio.c" />
     <ClCompile Include="..\gfc\src\gfc_callbacks.c" />
+    <ClCompile Include="..\gfc\src\gfc_color.c" />
     <ClCompile Include="..\gfc\src\gfc_input.c" />
     <ClCompile Include="..\gfc\src\gfc_list.c" />
     <ClCompile Include="..\gfc\src\gfc_matrix.c" />
@@ -252,17 +250,13 @@
     <ClCompile Include="..\src\energy_attack.c" />
     <ClCompile Include="..\src\entity.c" />
     <ClCompile Include="..\src\game.c" />
-    <ClCompile Include="..\src\gf2d_color.c" />
     <ClCompile Include="..\src\gf2d_draw.c" />
-    <ClCompile Include="..\src\gf2d_elements.c" />
     <ClCompile Include="..\src\gf2d_graphics.c" />
-    <ClCompile Include="..\src\gf2d_list.c" />
     <ClCompile Include="..\src\gf2d_sprite.c" />
     <ClCompile Include="..\src\enemy.c" />
     <ClCompile Include="..\src\player_ent.c" />
     <ClCompile Include="..\src\tile_map.c" />
     <ClCompile Include="..\src\tile_set.c" />
-    <ClCompile Include="..\src\windows.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

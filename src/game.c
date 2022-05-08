@@ -7,6 +7,8 @@
 
 #include "gf2d_graphics.h"
 #include "gf2d_sprite.h"
+#include "gfc_audio.h"
+#include "gfc_text.h"
 
 
 #include "entity.h"
@@ -14,7 +16,6 @@
 #include "player_ent.h"
 #include "enemy.h"
 #include "../include/ability_items.h"
-#include "../include/windows.h"
 
 #include "tile_map.h"
 
@@ -74,13 +75,20 @@ int main(int argc, char * argv[])
     
     gf2d_graphics_set_frame_delay(16);
     gf2d_sprite_init(1024);
+
+    gfc_audio_init(32, 16, 8, 16, true, true);
+
     tile_set_manager_init(64);
     entity_manager_init(512);
 
+    Sound *bgm = gfc_sound_load("Sound/bgm.wav", 0.5, 1);
+    gfc_sound_play(bgm, -1, 0.25, 1, 1);
+
+    gf2d_text_init("Fonts/Elfboyclassic.ttf");
     //windows_init(128);
 
-    TTF_Init();
-    TTF_Font* Elfboy = TTF_OpenFont("Fonts/Elfboyclassic.ttf",32);
+    //TTF_Init();
+    //TTF_Font* Elfboy = TTF_OpenFont("Fonts/Elfboyclassic.ttf",32);
 
     SDL_ShowCursor(SDL_DISABLE);
     
@@ -90,7 +98,7 @@ int main(int argc, char * argv[])
     health_background = gf2d_sprite_load_image("images/health_background.png");
     health = gf2d_sprite_load_image("images/health.png");
     exp = gf2d_sprite_load_image("images/experience.png");
-    //bug_ent_new(vector2d(500,300));
+    
     player_ent_new(vector2d(500,587));
     enemy_ent_new(vector2d(700, 580),1);
     enemy_ent_new(vector2d(200, 580),1);
@@ -98,11 +106,12 @@ int main(int argc, char * argv[])
     ability_item_new(vector2d(50, 580),2);
     tilemap = tilemap_load("levels/test.json");
 
-    SDL_Color clrFg = { 0,0,255,0 };  // Blue ("Fg" is foreground)
-    SDL_Color clrBg = { 0,0,0,0 };  // Blue ("Fg" is foreground)
-    SDL_Surface* text = TTF_RenderText_Blended(Elfboy, "Courier 12", clrFg);
-    SDL_Rect rcDest = { 500,0,200,200 };
-    SDL_BlitSurface(text, NULL, gf2d_graphics_screen_convert(&text), &rcDest);
+    //SDL_Color clrFg = { 0,0,255,0 };  // Blue ("Fg" is foreground)
+    //SDL_Color clrBg = { 0,0,0,0 };  // Blue ("Fg" is foreground)
+    //SDL_Surface* text = TTF_RenderText_Blended(Elfboy, "Courier 12", clrFg);
+    ////SDL_Surface* use = SDL_CreateRGBSurface(NULL,200,200,8,NULL,NULL,NULL,NULL);
+    //SDL_Rect rcDest = { 500,0,200,200 };
+    //SDL_BlitSurface(text, NULL, gf2d_graphics_get_renderer(), &rcDest);//gf2d_graphics_screen_convert(text)
     
 
     /*main game loop*/
@@ -208,9 +217,9 @@ int main(int argc, char * argv[])
        // slog("Rendering at %f FPS",gf2d_graphics_get_frames_per_second());
     }
     slog("---==== END ====---");
-    SDL_FreeSurface(text);
-    TTF_CloseFont(Elfboy);
-    TTF_Quit();
+    //SDL_FreeSurface(text);
+    //TTF_CloseFont(Elfboy);
+    //TTF_Quit();
     return 0;
 }
 /*eol@eof*/

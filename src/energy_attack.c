@@ -12,14 +12,11 @@ int dir;
 
 Vector2D scale = { 2,2 };
 
-Entity* parent;
-
 Uint32 life = 0;
 
 
-void energy_attack(Vector2D start, int owner_dir, Entity* owner) {
+void energy_attack(Vector2D start, int owner_dir) {
     dir = owner_dir;
-    parent = owner;
     energy_attack_new(start);
     
 }
@@ -29,21 +26,25 @@ void energy_think(Entity* self)
     //Vector2D direction;
     //int mx, my;
     Entity* ent;
+    
+    if (!self)return;
+
     //slog("about to colide");
+    slog("i shot");
     ent = collision_test_get_ent(self);
     if (ent) {
         if (!ent->is_player) {
             if (ent->damage) {
                 ent->damage(ent, 1);
-                //slog("i did the damage");
+                slog("i did the damage");
                 entity_free(self);
             }
         }
     }
+
     if (SDL_GetTicks() >= life + 999)
         entity_free(self);
 
-    if (!self)return;
     self->frame = (self->frame + 0.1);
     if (self->frame >= 4)self->frame = 0;
     if (self->direction == 90) {
@@ -59,9 +60,6 @@ void energy_think(Entity* self)
 
 void energy_update(Entity* self) {
     if (!self)return;
-    //Vector2D direction;
-    //direction.x = 0 - self->position.x;
-    //direction.y = 0 - self->position.y;
 
     SDL_Rect rect2;
     rect2.x = self->position.x + 32;
@@ -70,12 +68,6 @@ void energy_update(Entity* self) {
     rect2.y = self->position.y - 15;
     rect2.w = 32;
     rect2.h = 32;
-    //Vector4D boxColor;
-    //boxColor.x = 255;
-    //boxColor.y = 255;
-    //boxColor.z = 255;
-    //boxColor.w = 255;
-    //gf2d_draw_rect(rect2, boxColor);
     self->bounds = rect2;
 }
 
