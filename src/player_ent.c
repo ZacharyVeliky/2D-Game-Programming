@@ -37,7 +37,8 @@ typedef enum {
     IDLE,
     WALKING,
     JUMPING,
-    FALLING
+    FALLING,
+    ATTACKING
 } MovementState;
 
 MovementState playerMovement = IDLE;
@@ -130,6 +131,12 @@ void player_think(Entity* self)
         if (self->frame >= 4)self->frame = 0; 
         break;
 
+    case ATTACKING:
+        self->frame = (self->frame + 0.1);
+        if (self->frame >= 4)self->frame = 0;
+
+        break;
+
     default:
         self->frame = (self->frame + 0.1);
         if (self->frame >= 4)self->frame = 0;
@@ -163,8 +170,6 @@ void player_think(Entity* self)
     if (keys[SDL_SCANCODE_D] && (collision_test_all_precise(self) != 3))
     {
         playerMovement = WALKING;
-        vector2d_set_magnitude(&direction, 3);
-        vector2d_copy(self->velocity, direction);
         self->position.x += 1;
         self->is_mirror = 0;
         angle = 0;
@@ -192,6 +197,7 @@ void player_think(Entity* self)
         last_attack_time = SDL_GetTicks();
     }
     if (keys[SDL_SCANCODE_F] && (SDL_GetTicks() >= last_attack_time + 1000) && has_energy_attack) {
+        playerMovement = ATTACKING;
         player_attack(2, self);
         last_attack_time = SDL_GetTicks();
     }
