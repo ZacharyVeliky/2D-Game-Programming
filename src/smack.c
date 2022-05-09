@@ -17,19 +17,16 @@ void smack_think(Entity* self)
 
     if (!self)return;
 
-    //slog("about to colide");
-    slog("i shot");
     ent = collision_test_get_ent(self);
     if (ent != NULL) {
         if (!ent->is_player) {
             if (ent->damage) {
                 ent->damage(ent, 1);
-                //slog("i did the damage");
             }
         }
     }
 
-    if (SDL_GetTicks() >= self->life + 250)
+    if (SDL_GetTicks() >= self->life + 150)
         entity_free(self);
 
     self->frame = (self->frame + 0.1);
@@ -73,6 +70,7 @@ Entity* smack_new(Vector2D position, int dir)
     ent->rotation.y = 0;
     ent->direction = dir;
     ent->draw_scale = vector2d(2, 2);
+    ent->touch_player = false;
     vector2d_copy(ent->position, position);
     ent->life = SDL_GetTicks();
     return ent;

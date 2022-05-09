@@ -27,7 +27,7 @@ int current_exp = 0;
 Bool has_energy_attack = 0;
 Bool has_rocket_boots = 0;
 Bool has_dash = 0;
-Bool has_smack = 1;
+Bool has_smack = 0;
 
 Bool can_cahnge_anim = true;
 
@@ -35,6 +35,7 @@ Uint32 last_time;
 Uint32 last_attack_time;
 Uint32 last_jump_time;
 Uint32 last_dash_time;
+Uint32 last_interact_time;
 
 Sound* fireball;
 
@@ -43,7 +44,8 @@ typedef enum {
     WALKING,
     JUMPING,
     FALLING,
-    ATTACKING
+    ATTACKING,
+    PAIN
 } MovementState;
 
 MovementState playerMovement = IDLE;
@@ -71,9 +73,13 @@ void player_get_exp(int exp) {
 
 void player_damage(Entity* self, int damage) {
     if (self->current_health >= 1) {
-        self->current_health -= damage;
-        if (self->current_health <= 0)
-            slog("You Died");
+        if (!self->is_invincible) {
+            self->current_health -= damage;
+            self->is_invincible = true;
+            self->iframes = SDL_GetTicks() + 333;
+            if (self->current_health <= 0)
+                slog("You Died");
+        }
     }
     else
         slog("You Died");
@@ -87,7 +93,7 @@ void player_attack(int atkNum, Entity* player) {
         energy_attack(player->position, angle);
         break;
 
-    case 2: slog("Smack");
+    case 2: //slog("Smack");
         smack_attack(player->position, angle);
         break;
 
@@ -108,7 +114,7 @@ void player_think(Entity* self)
     Entity* ent;
     const Uint8* keys;
     
-    if (playerMovement != ATTACKING) {
+    if (playerMovement != ATTACKING && playerMovement != PAIN) {
         switch (playerMovement)
         {
         case IDLE:
@@ -139,7 +145,7 @@ void player_think(Entity* self)
             break;
         }
     }
-    else
+    else if (playerMovement == ATTACKING)
     {
         self->frame = (self->frame + 0.1);
         if (self->frame >= 14) { 
@@ -148,22 +154,35 @@ void player_think(Entity* self)
             playerMovement = IDLE;
         };
     }
+    else if (playerMovement == PAIN) 
+    {
+
+    }
     
+    if (SDL_GetTicks() >= self->iframes) {
+        self->is_invincible = false;
+    }
 
     keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
-    Vector2D direction = { self->position.y, self->position.y };
+    Vector2D direction = { 0, self->position.y};
     Vector2D mag_position = { self->position.x, self->position.y };
 
 
-    if (keys[SDL_SCANCODE_W] && self->position.y > 586 && has_rocket_boots)
+
+    if (keys[SDL_SCANCODE_W] && has_rocket_boots) //&& self->position.y > 586 
     {
         // jump
         //fix later
         playerMovement = JUMPING;
 
-        if (SDL_GetTicks() > last_jump_time + 100) {
-            vector2d_set_magnitude(&self->position, self->position.y-1);
-            vector2d_copy(self->velocity, direction);
+        if (SDL_GetTicks() > last_jump_time + 200) {
+            self->position.y -= 50;
+            //slog("%f", self->position.y);
+            //vector2d_set_magnitude(&direction, self->position.y -3 );
+            //slog("%f", direction.y);
+            //vector2d_copy(self->velocity, direction);
+            //
+            //self->velocity.y -=1 ;
         }
 
         last_jump_time = SDL_GetTicks();
@@ -196,6 +215,13 @@ void player_think(Entity* self)
             last_time = SDL_GetTicks();
         }
     }
+
+    if (keys[SDL_SCANCODE_E] && SDL_GetTicks() >= last_interact_time) {
+        slog("interact");
+        self->is_interact = true;
+        last_interact_time = SDL_GetTicks() + 100;
+    }
+
     if (keys[SDL_SCANCODE_SPACE] && (SDL_GetTicks() >= last_attack_time + 1000) && has_energy_attack) {
         gfc_sound_play(fireball, 0, 0.25, 2, 2);
         player_attack(1, self);
@@ -226,21 +252,32 @@ void player_think(Entity* self)
                 ent->is_collected = true;
                 has_rocket_boots = true;
                 break;
+            case 3:
+                ent->is_collected = true;
+                has_smack = true;
+                break;
             default:
                 break;
             }
         }
     }
-    if (!collision_test_all_tiles(self) && self->position.y < 592 && !collision_test_all_ents(self) ) { //
-        self->position.y++;
+    if (!collision_test_all_tiles(self) && self->position.y < 592 && !collision_test_all_ents(self) ) { // 592
+        self->position.y += 1;
+    }
+    else
+    {
+        self->velocity.y++;
     }
 }
 
 void player_update(Entity* self) {
     if (!self)return;
-    //Vector2D direction;
-    //direction.x = 0 - self->position.x;
-    //direction.y = 0 - self->position.y;
+
+    if (SDL_GetTicks() >= last_interact_time)
+        self->is_interact = false;
+
+    player_health_current = self->current_health;
+    player_health = self->health;
 
     rect.x = self->position.x - 16;
     rect.y = self->position.y - 16;
@@ -260,8 +297,6 @@ void player_update(Entity* self) {
     //vector2d_copy(player_position, self->position);
 }
 
-
-
 Entity* player_ent_new(Vector2D position)
 {
     Entity* ent;
@@ -280,12 +315,16 @@ Entity* player_ent_new(Vector2D position)
     ent->draw_scale = vector2d(2, 2);
     ent->rotation.x = 64;
     ent->rotation.y = 64;
+    ent->velocity.x = 0;
+    ent->velocity.y = 0;
     ent->bounds = rect;
     ent->is_player = true;
+    ent->iframes = SDL_GetTicks()+333;
     vector2d_copy(ent->position, position);
 
     json = sj_load("entity/player.json");
-    sj_get_integer_value(sj_object_get_value(json, "base_health"), &player_health);
+    sj_get_integer_value(sj_object_get_value(json, "base_health"), &ent->health);
+    ent->current_health = ent->health;
     sj_free(json);
     fireball = gfc_sound_load("Sound/fireball.wav", 0.5, 1);
     return ent;

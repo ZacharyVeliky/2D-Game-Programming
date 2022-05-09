@@ -8,6 +8,6 @@
  * @param position the location in the world to spawn a collider
  * @returns NULL on error, or a pointer to the bug
  */
-Entity* collision_ent_new(Vector2D position);
+Entity* collision_ent_new(Vector2D position, SDL_Rect bound);
 
 #endif

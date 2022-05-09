@@ -13,9 +13,11 @@
 
 #include "entity.h"
 #include "bug_ent.h"
+#include "../include/collision_ent.h"
 #include "player_ent.h"
 #include "enemy.h"
 #include "../include/ability_items.h"
+#include "../include/switch.h"
 
 #include "tile_map.h"
 
@@ -37,16 +39,28 @@ int main(int argc, char * argv[])
 
     /*variable declarations*/
     int done = 0;
+    int current_tilemap = 1;
     const Uint8 * keys;
     Sprite *sprite;
 
     Bool isDrawingMenu = 0;
+
+    SDL_Rect cl1;
+    cl1.x = 0;
+    cl1.y = 1200;
+    cl1.w = 700;
+    cl1.h = 32;
+    SDL_Rect cl2;
+    SDL_Rect cl3;
+    SDL_Rect cl4;
 
     int mx,my;
     float mf = 0;
     Sprite *mouse;
     Vector4D mouseColor = { 255,100,255,200 };
     TileMap *tilemap;
+    TileMap *tilemap2;
+    TileMap *tilemap3;
 
     Sprite* health_background;
     Sprite* health;
@@ -74,12 +88,12 @@ int main(int argc, char * argv[])
         0);
     
     gf2d_graphics_set_frame_delay(16);
-    gf2d_sprite_init(1024);
+    gf2d_sprite_init(512);
 
     gfc_audio_init(32, 16, 8, 16, true, true);
 
     tile_set_manager_init(64);
-    entity_manager_init(512);
+    entity_manager_init(256);
 
     Sound *bgm = gfc_sound_load("Sound/bgm.wav", 0.5, 1);
     gfc_sound_play(bgm, -1, 0.25, 1, 1);
@@ -99,9 +113,16 @@ int main(int argc, char * argv[])
     player_ent_new(vector2d(500,587));
     enemy_ent_new(vector2d(700, 580));
     enemy_ent_new(vector2d(200, 580));
-    ability_item_new(vector2d(400, 580),1);
+    enemy_ent_new(vector2d(800, 580));
+    enemy_ent_new(vector2d(900, 580));
+
+    ability_item_new(vector2d(400, 580),3);
     ability_item_new(vector2d(50, 580),2);
+
+    switch_ent_new(vector2d(800, 580));
+    collision_ent_new(vector2d(0, 610), cl1);
     tilemap = tilemap_load("levels/test.json");
+    //tilemap2 = tilemap_load("levels/map2.json");
 
     //SDL_Color clrFg = { 0,0,255,0 };  // Blue ("Fg" is foreground)
     //SDL_Color clrBg = { 0,0,0,0 };  // Blue ("Fg" is foreground)
@@ -114,20 +135,25 @@ int main(int argc, char * argv[])
     /*main game loop*/
     while(!done)
     {
+        //if (current_tilemap == 1) {
+
+        //    tilemap = tilemap_load("levels/test.json");
+        //}
+        //else
+        //    tilemap = tilemap_load("levels/map2.json");
         currnet_player_health = player_health_math();
         current_health_scale.x = 0.2 * currnet_player_health;
         
         currnet_player_exp = player_exp_math();
         current_exp_scale.x = 0.2 * currnet_player_exp;
-        if (SDL_GetTicks() >= spawn_time + 10000) {
-            enemy_ent_new(vector2d(800, 580));
-            enemy_ent_new(vector2d(900, 580));
-            spawn_time = SDL_GetTicks();
-        }
-
-
         SDL_PumpEvents();   // update SDL's internal event structures
         keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
+        //if (keys[SDL_SCANCODE_O]) {
+        //    if (current_tilemap == 1)
+        //        current_tilemap = 2;
+        //    else
+        //        current_tilemap = 1;
+        //}
         /*update things here*/
         SDL_GetMouseState(&mx,&my);
         mf += (float)0.1;

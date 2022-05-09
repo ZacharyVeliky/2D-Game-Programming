@@ -135,7 +135,7 @@ void tile_set_draw(TileSet *tileset,Uint32 tile,Vector2D position)
         NULL,
         NULL,
         tile);
-    gf2d_draw_rect(tileset->bounds, boxColor);
+    //gf2d_draw_rect(tileset->bounds, boxColor);
 }
 
 TileSetManager* get_tile_set_manager()

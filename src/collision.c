@@ -64,6 +64,8 @@ int collision_test_all_ents_precise(Entity* player) {
         other = &e_man->entity_list[i];
         if (player == other)
             continue;
+        if (!other->touch_player)
+            continue;
         if (collision_rect_test(player->bounds, other->bounds)) {
             if (collision_rect_test_right(player->bounds, other->bounds))
                 return  3;

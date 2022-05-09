@@ -213,6 +213,9 @@
     <ClInclude Include="..\include\smack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\switch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="2D-Game-Programming.rc">
@@ -317,6 +320,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\smack.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\switch.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

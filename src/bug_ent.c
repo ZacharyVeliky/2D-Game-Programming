@@ -57,6 +57,7 @@ Entity *bug_ent_new(Vector2D position)
     ent->draw_offset.y = -64;
     ent->rotation.x = 64;
     ent->rotation.y = 64;
+    ent->touch_player = true;
     //vector2d_set(ent->bounds, -32,32)
     vector2d_copy(ent->position,position);
     return ent;

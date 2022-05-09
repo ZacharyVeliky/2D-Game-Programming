@@ -59,15 +59,15 @@ Entity* ability_item_new(Vector2D position, int item_id)
             ent->draw_offset.y = -20;//-167
             ent->draw_scale = vector2d(0.1, 0.1);
         break;
-    case 2: ent->sprite = gf2d_sprite_load_all("images/Items/rocket_boots.png", 256, 256, 4); 
+    case 2: ent->sprite = gf2d_sprite_load_all("images/Items/tome_of_flying.png", 500, 500, 4); 
             ent->draw_offset.x = +25;//-172
             ent->draw_offset.y = -20;//-167
-            ent->draw_scale = vector2d(0.2, 0.2);
+            ent->draw_scale = vector2d(0.1, 0.1);
             break;
-    case 3: ent->sprite = gf2d_sprite_load_all("images/wand_of_smacking.png", 500, 500, 4); 
-        ent->draw_offset.x = 20;//-172
+    case 3: ent->sprite = gf2d_sprite_load_all("images/Items/dagger.png", 200, 200, 4); 
+        ent->draw_offset.x = 30;//-172
         ent->draw_offset.y = -20;//-167
-        ent->draw_scale = vector2d(0.1, 0.1);
+        ent->draw_scale = vector2d(0.2, 0.2);
         break;
     case 4: ent->sprite = gf2d_sprite_load_all("images/laser_gun.png", 32, 32, 4); 
         break;

@@ -82,6 +82,17 @@ void enemy_think(Entity* self)
         self->is_invincible = false;
         current_animation = 1;
     }
+    
+    Entity* ent;
+
+    ent = collision_test_get_ent(self);
+    if (ent != NULL) {
+        if (ent->is_player) {
+            if (ent->damage) {
+                ent->damage(ent, 1);
+            }
+        }
+    }
 }
 
 void enemy_update(Entity* self) {
@@ -116,6 +127,7 @@ Entity* enemy_ent_new(Vector2D position)
     ent->bounds = rect;
     ent->current_health = 1;
     ent->is_invincible = false;
+    ent->touch_player = true;
     vector2d_copy(ent->position, position);
     return ent;
 }

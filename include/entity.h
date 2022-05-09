@@ -9,6 +9,7 @@ typedef struct ENTITY_S
 {
     Uint8       _inuse;         /**<this flag keeps track if this entity is active or free to reassign*/
     Uint8       solid;          /**<If true entity clips the world*/
+    Bool        touch_player;   /**<If true entity clips the world*/
     Sprite     *sprite;         /**<sprite used to draw the sprite*/
     float       frame;          /**<current frame to draw*/
     Vector2D    draw_offset;    /**<draw position relative to the entity position*/
@@ -30,6 +31,9 @@ typedef struct ENTITY_S
     Bool        is_invincible;
     Uint32      iframes;
     Uint32      life;
+    int         act_id;
+    Bool        is_act;
+    Bool        is_interact;
     void (*think)(struct ENTITY_S *self);   /**<a pointer to a think function for this entity*/
     void (*update)(struct ENTITY_S *self);   /**<a pointer to an update function for this entity*/
     void (*damage)(struct ENTITY_S *self, int dam);   /**<a pointer to a damage function for this entity*/
