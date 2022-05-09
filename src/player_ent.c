@@ -28,18 +28,23 @@ Bool has_energy_attack = 0;
 Bool has_rocket_boots = 0;
 Bool has_dash = 0;
 Bool has_smack = 0;
+Bool has_inv = 0;
 
 Bool level_flag = false;
 
 Bool can_cahnge_anim = true;
 
 Uint32 last_time;
-Uint32 last_attack_time;
-Uint32 last_jump_time;
-Uint32 last_dash_time;
+Uint32 last_attack_time = 0;
+Uint32 last_jump_time = 0;
+Uint32 last_dash_time = 0;
+Uint32 last_smack_time = 0;
+Uint32 last_inv_time = 0;
 Uint32 last_interact_time = 0;
 
 Sound* fireball;
+Sound* slash;
+Sound* dash;
 
 typedef enum {
     IDLE,
@@ -177,7 +182,7 @@ void player_think(Entity* self)
         playerMovement = JUMPING;
 
         if (SDL_GetTicks() > last_jump_time + 200) {
-            self->position.y -= 50;
+            self->position.y -= 60;
             //slog("%f", self->position.y);
             //vector2d_set_magnitude(&direction, self->position.y -3 );
             //slog("%f", direction.y);
@@ -227,16 +232,27 @@ void player_think(Entity* self)
         player_attack(1, self);
         last_attack_time = SDL_GetTicks();
     }
-    if (keys[SDL_SCANCODE_F] && (SDL_GetTicks() >= last_attack_time + 250) && has_smack) {
+    if (keys[SDL_SCANCODE_F] && (SDL_GetTicks() >= last_smack_time + 250) && has_smack) {
         playerMovement = ATTACKING;
+        gfc_sound_play(slash, 0, 0.25, 2, 2);
         self->frame = 11;
         can_cahnge_anim = false;
         player_attack(2, self);
-        last_attack_time = SDL_GetTicks();
+        last_smack_time = SDL_GetTicks();
+    }
+    if (keys[SDL_SCANCODE_Q] && (SDL_GetTicks() >= last_inv_time + 10000) && has_inv) {
+        slog("inv");
+        self->iframes = SDL_GetTicks() + 5000;
+        self->is_invincible = true;
+        last_inv_time = SDL_GetTicks();
     }
     if (keys[SDL_SCANCODE_LSHIFT] && (SDL_GetTicks() >= last_dash_time + 500) && has_dash) {
-        player_attack(3, self);
-        last_attack_time = SDL_GetTicks();
+        if (self->is_mirror)
+            self->position.x -= 50;
+        else
+            self->position.x += 50;
+        gfc_sound_play(dash, 0, 0.25, 2, 2);
+        last_dash_time = SDL_GetTicks();
     }
     //collect items
     ent = collision_test_get_ent(self);
@@ -256,6 +272,16 @@ void player_think(Entity* self)
                 ent->is_collected = true;
                 has_smack = true;
                 break;
+            case 4:
+                ent->is_collected = true;
+                has_inv = true;
+                break;
+                break;
+
+            case 5:
+                ent->is_collected = true;
+                has_dash = true;
+                break;
             default:
                 break;
             }
@@ -270,7 +296,7 @@ void player_think(Entity* self)
     }
 }
 
-void player_update(Entity* self) {
+void player_update(Entity* self){
     if (!self)return;
 
     if (SDL_GetTicks() >= last_interact_time - 100)
@@ -328,6 +354,8 @@ Entity* player_ent_new(Vector2D position)
     ent->current_health = ent->health;
     sj_free(json);
     fireball = gfc_sound_load("Sound/fireball.wav", 0.5, 1);
+    slash = gfc_sound_load("Sound/slash.wav", 0.5, 1);
+    dash = gfc_sound_load("Sound/dash.wav", 0.5, 1);
     return ent;
 }
 

@@ -130,6 +130,7 @@ void entity_draw(Entity *entity)
         slog("null pointer provided, nothing to do!");
         return;
     }
+    if (entity->is_ui)return;
     if (entity->sprite == NULL)return;// nothing to draw
     if (entity->is_mirror) {
         flip.x = 1;

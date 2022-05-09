@@ -45,15 +45,17 @@ int main(int argc, char * argv[])
     const Uint8 * keys;
     Sprite *sprite;
 
+    Bool spawn_again = 1;
+
     SDL_Rect cl1;
     cl1.x = 0;
     cl1.y = 1200;
     cl1.w = 700;
     cl1.h = 32;
     SDL_Rect cl2;
-    cl2.x = 0;
-    cl2.y = 1200;
-    cl2.w = 700;
+    cl2.x = 920;
+    cl2.y = 540;
+    cl2.w = 300;
     cl2.h = 32;
     SDL_Rect cl3;
     SDL_Rect cl4;
@@ -116,8 +118,7 @@ int main(int argc, char * argv[])
 
     start_ui_new(vector2d(200,300));
     start_ui_new(vector2d(650,300));
-
-    
+        
     door_ent_new(vector2d(50, 560));
 
     player_ent_new(vector2d(500,587));
@@ -128,12 +129,12 @@ int main(int argc, char * argv[])
 
     switch_ent_new(vector2d(800, 575));
 
+    ability_item_new(vector2d(950, 580),5);
     ability_item_new(vector2d(400, 580),3);
     ability_item_new(vector2d(100, 580),2);
-
+    ability_item_new(vector2d(600, 580),1);
     
-
-    collision_ent_new(vector2d(0, 610), cl1);
+    collision_ent_new(vector2d(0, 610), cl2);
     tilemap = tilemap_load("levels/test.json");
     //tilemap2 = tilemap_load("levels/map2.json");
 
@@ -161,13 +162,12 @@ int main(int argc, char * argv[])
         current_exp_scale.x = 0.2 * currnet_player_exp;
         SDL_PumpEvents();   // update SDL's internal event structures
         keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
-        //if (keys[SDL_SCANCODE_O]) {
-        //    if (current_tilemap == 1)
-        //        current_tilemap = 2;
-        //    else
-        //        current_tilemap = 1;
-        //}
-        /*update things here*/
+
+        if (SDL_GetTicks() > 10 && spawn_again) {
+            ability_item_new(vector2d(1020, 580), 4);
+            spawn_again = 0;
+        }
+
         SDL_GetMouseState(&mx,&my);
         mf += (float)0.1;
         if (mf >= 16.0)mf = 0;

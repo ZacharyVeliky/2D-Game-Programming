@@ -38,7 +38,7 @@ void ability_update(Entity* self) {
     //gf2d_draw_rect(rect2, boxColor);
     self->bounds = rect;
     if (self->is_collected) {
-        slog("yoink");
+        //slog("yoink");
         entity_free(self);
     }
 }
@@ -65,13 +65,19 @@ Entity* ability_item_new(Vector2D position, int item_id)
             ent->draw_scale = vector2d(0.1, 0.1);
             break;
     case 3: ent->sprite = gf2d_sprite_load_all("images/Items/dagger.png", 200, 200, 4); 
-        ent->draw_offset.x = 30;//-172
-        ent->draw_offset.y = -20;//-167
-        ent->draw_scale = vector2d(0.2, 0.2);
+            ent->draw_offset.x = 30;//-172
+            ent->draw_offset.y = -20;//-167
+            ent->draw_scale = vector2d(0.2, 0.2);
         break;
-    case 4: ent->sprite = gf2d_sprite_load_all("images/laser_gun.png", 32, 32, 4); 
+    case 4: ent->sprite = gf2d_sprite_load_all("images/Items/meat.png", 32, 32, 4); 
+            ent->draw_offset.x = 30;//-172
+            ent->draw_offset.y = -10;//-167
+            ent->draw_scale = vector2d(0.75, 0.75);
         break;
-    case 5: ent->sprite = gf2d_sprite_load_all("images/laser_gun.png", 32, 32, 4); 
+    case 5: ent->sprite = gf2d_sprite_load_all("images/Items/dash.png", 500, 500, 4);
+            ent->draw_offset.x = +25;//-172
+            ent->draw_offset.y = -20;//-167
+            ent->draw_scale = vector2d(0.1, 0.1);
         break;
 
     default:ent->sprite = gf2d_sprite_load_all("images/laser_gun.png", 32, 32, 4);

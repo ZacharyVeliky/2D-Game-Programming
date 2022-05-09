@@ -13,6 +13,7 @@ Uint32 last_enter = 0;
 Bool is_open = false;
 
 void open(){
+    slog("meme");
     if (is_open)
         is_open = false;
     else
@@ -35,10 +36,10 @@ void door_update(Entity* self) {
     if (!self)return;
 
     if (!is_open) {
-        self->frame = 1;
+        self->frame = 2;
     }
     else
-        self->frame = 2;
+        self->frame = 1;
 
     Entity* ent;
 
@@ -52,7 +53,7 @@ void door_update(Entity* self) {
     }
 
     rect.x = self->position.x - 7;
-    rect.y = self->position.y - 6;
+    rect.y = self->position.y - 1;
     rect.w = 60;
     rect.h = 60;
     self->bounds = rect;

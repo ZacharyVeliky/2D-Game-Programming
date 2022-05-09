@@ -84,7 +84,7 @@ int collision_test_all_tiles(Entity* player) {
         other = &t_man->tile_set_list[i];
 
         if (collision_rect_test(player->bounds, other->bounds)) {
-            slog("touch");
+            //slog("touch");
             return 1;
         }
     }

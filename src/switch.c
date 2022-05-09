@@ -23,6 +23,7 @@ void activate(Entity * self) {
         }
         else {
             self->is_flipped = true;
+            open();
         }
         last_activate = SDL_GetTicks() + 150;
     }
@@ -77,6 +78,7 @@ Entity* switch_ent_new(Vector2D position)
     ent->health = 1;
     ent->draw_scale = vector2d(2, 2);
     ent->switch_id = 1;
+    ent->touch_player = false;
     ent->is_flipped = 0;
     vector2d_copy(ent->position, position);
     return ent;
