@@ -118,7 +118,7 @@ void entity_manager_draw_all()
     }
 }
 
-Bool enable_draw = 1;
+Bool enable_draw = 0;
 
 
 void entity_draw(Entity *entity)
