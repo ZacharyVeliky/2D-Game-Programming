@@ -29,13 +29,15 @@ Bool has_rocket_boots = 0;
 Bool has_dash = 0;
 Bool has_smack = 0;
 
+Bool level_flag = false;
+
 Bool can_cahnge_anim = true;
 
 Uint32 last_time;
 Uint32 last_attack_time;
 Uint32 last_jump_time;
 Uint32 last_dash_time;
-Uint32 last_interact_time;
+Uint32 last_interact_time = 0;
 
 Sound* fireball;
 
@@ -58,11 +60,10 @@ float player_health_math() {
 float player_exp_math() {
     float ret = (float)current_exp / (float)req_exp;
     if (ret == 1) {
+        level_flag = true;
         current_exp = 0;
         level++;
-        player_health++;
         req_exp++;
-        player_health_current = player_health;
     }
     return ret;
 }
@@ -217,9 +218,8 @@ void player_think(Entity* self)
     }
 
     if (keys[SDL_SCANCODE_E] && SDL_GetTicks() >= last_interact_time) {
-        slog("interact");
         self->is_interact = true;
-        last_interact_time = SDL_GetTicks() + 100;
+        last_interact_time = SDL_GetTicks() + 200;
     }
 
     if (keys[SDL_SCANCODE_SPACE] && (SDL_GetTicks() >= last_attack_time + 1000) && has_energy_attack) {
@@ -273,8 +273,14 @@ void player_think(Entity* self)
 void player_update(Entity* self) {
     if (!self)return;
 
-    if (SDL_GetTicks() >= last_interact_time)
+    if (SDL_GetTicks() >= last_interact_time - 100)
         self->is_interact = false;
+
+    if (level_flag) {
+        self->health++;
+        self->current_health = self->health;
+        level_flag = false;
+    }
 
     player_health_current = self->current_health;
     player_health = self->health;
@@ -290,11 +296,6 @@ void player_update(Entity* self) {
     boxColor.w = 255;
     gf2d_draw_rect(rect, boxColor);
     self->bounds = rect;
-    //slog("A.x %i", self->bounds.x);
-    //slog("A.y %i", self->bounds.y);
-    //vector2d_set_magnitude(&self->velocity, grav);
-    //vector2d_copy(self->velocity, self->position);
-    //vector2d_copy(player_position, self->position);
 }
 
 Entity* player_ent_new(Vector2D position)

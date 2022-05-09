@@ -209,6 +209,7 @@
     <ClInclude Include="..\include\chipmunk\cpVect.h" />
     <ClInclude Include="..\include\collision.h" />
     <ClInclude Include="..\include\collision_ent.h" />
+    <ClInclude Include="..\include\door.h" />
     <ClInclude Include="..\include\energy_attack.h" />
     <ClInclude Include="..\include\entity.h" />
     <ClInclude Include="..\include\gf2d_draw.h" />
@@ -218,6 +219,7 @@
     <ClInclude Include="..\include\player_ent.h" />
     <ClInclude Include="..\include\resource.h" />
     <ClInclude Include="..\include\smack.h" />
+    <ClInclude Include="..\include\start.h" />
     <ClInclude Include="..\include\switch.h" />
     <ClInclude Include="..\include\tile_set.h" />
     <ClInclude Include="..\include\tile_map.h" />
@@ -249,6 +251,7 @@
     <ClCompile Include="..\src\bug_ent.c" />
     <ClCompile Include="..\src\collision.c" />
     <ClCompile Include="..\src\collision_ent.c" />
+    <ClCompile Include="..\src\door.c" />
     <ClCompile Include="..\src\energy_attack.c" />
     <ClCompile Include="..\src\entity.c" />
     <ClCompile Include="..\src\game.c" />
@@ -258,6 +261,7 @@
     <ClCompile Include="..\src\enemy.c" />
     <ClCompile Include="..\src\player_ent.c" />
     <ClCompile Include="..\src\smack.c" />
+    <ClCompile Include="..\src\start.c" />
     <ClCompile Include="..\src\switch.c" />
     <ClCompile Include="..\src\tile_map.c" />
     <ClCompile Include="..\src\tile_set.c" />

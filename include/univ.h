@@ -3,5 +3,8 @@
 
 #include<SDL.h>
 
-Uint32 game_time;
+Bool isDrawingMenu = 0;
+int done = 0;
+int solo = 1;
+
 #endif

@@ -34,6 +34,9 @@ typedef struct ENTITY_S
     int         act_id;
     Bool        is_act;
     Bool        is_interact;
+    int         switch_id;
+    Bool        is_flipped;
+    Bool        is_ui;
     void (*think)(struct ENTITY_S *self);   /**<a pointer to a think function for this entity*/
     void (*update)(struct ENTITY_S *self);   /**<a pointer to an update function for this entity*/
     void (*damage)(struct ENTITY_S *self, int dam);   /**<a pointer to a damage function for this entity*/
@@ -60,6 +63,9 @@ void entity_manager_init(Uint32 max_entities);
  * @brief draws all active entities to the screen
  */
 void entity_manager_draw_all();
+
+//hacky way to show parts of UI
+void entity_manager_draw_ui();
 
 /**
  * @brief runs any think function for all active entities

@@ -37,7 +37,7 @@ void entity_manager_init(Uint32 max_entities)
 
 void entity_manager_clear()
 {
-    int i;
+    Uint32 i;
     for (i = 0;i < entity_manager.max_entities;i++)
     {
         if (!entity_manager.entity_list[i]._inuse)continue;
@@ -47,7 +47,7 @@ void entity_manager_clear()
 
 Entity *entity_new()
 {
-    int i;
+    Uint32 i;
     for (i = 0;i < entity_manager.max_entities;i++)
     {
         if (!entity_manager.entity_list[i]._inuse)
@@ -78,7 +78,7 @@ void entity_think(Entity *ent)
 
 void entity_manager_think_all()
 {
-    int i;
+    Uint32 i;
     for (i = 0;i < entity_manager.max_entities;i++)
     {
         if (!entity_manager.entity_list[i]._inuse)continue;
@@ -100,7 +100,7 @@ void entity_update(Entity* ent)
 
 void entity_manager_update_all()
 {
-    int i;
+    Uint32 i;
     for (i = 0; i < entity_manager.max_entities; i++)
     {
         if (!entity_manager.entity_list[i]._inuse)continue;
@@ -110,7 +110,7 @@ void entity_manager_update_all()
 
 void entity_manager_draw_all()
 {
-    int i;
+    Uint32 i;
     for (i = 0;i < entity_manager.max_entities;i++)
     {
         if (!entity_manager.entity_list[i]._inuse)continue;
@@ -118,7 +118,7 @@ void entity_manager_draw_all()
     }
 }
 
-Bool enable_draw = 0;
+Bool enable_draw = 1;
 
 
 void entity_draw(Entity *entity)
@@ -154,6 +154,52 @@ void entity_draw(Entity *entity)
     rectBoxColor.w = 255;
     if (enable_draw)
         gf2d_draw_rect(entity->bounds, rectBoxColor);
+}
+
+void entity_draw_ui(Entity *entity)
+{
+    Vector2D drawPosition;
+    Vector2D flip = {0,0};
+    if (entity == NULL)
+    {
+        slog("null pointer provided, nothing to do!");
+        return;
+    }
+    if (!entity->is_ui)return;// not ui
+    if (entity->sprite == NULL)return;// nothing to draw
+    if (entity->is_mirror) {
+        flip.x = 1;
+        flip.y = 0;
+    }
+
+    vector2d_add(drawPosition,entity->position,entity->draw_offset);
+    gf2d_sprite_draw(
+        entity->sprite,        
+        drawPosition,
+        &entity->draw_scale,
+        NULL,
+        &entity->rotation,
+        &flip, //flip
+        NULL,
+        (Uint32)entity->frame);
+
+    Vector4D rectBoxColor;
+    rectBoxColor.x = 255;
+    rectBoxColor.y = 255;
+    rectBoxColor.z = 255;
+    rectBoxColor.w = 255;
+    if (enable_draw)
+        gf2d_draw_rect(entity->bounds, rectBoxColor);
+}
+
+void entity_manager_draw_ui()
+{
+    Uint32 i;
+    for (i = 0; i < entity_manager.max_entities; i++)
+    {
+        if (!entity_manager.entity_list[i]._inuse)continue;
+        entity_draw_ui(&entity_manager.entity_list[i]);
+    }
 }
 
 void entity_free(Entity *entity)

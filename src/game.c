@@ -10,6 +10,7 @@
 #include "gfc_audio.h"
 #include "gfc_text.h"
 
+#include "../include/univ.h"
 
 #include "entity.h"
 #include "bug_ent.h"
@@ -18,6 +19,8 @@
 #include "enemy.h"
 #include "../include/ability_items.h"
 #include "../include/switch.h"
+#include "../include/door.h"
+#include "../include/start.h"
 
 #include "tile_map.h"
 
@@ -38,12 +41,9 @@ int main(int argc, char * argv[])
     }
 
     /*variable declarations*/
-    int done = 0;
     int current_tilemap = 1;
     const Uint8 * keys;
     Sprite *sprite;
-
-    Bool isDrawingMenu = 0;
 
     SDL_Rect cl1;
     cl1.x = 0;
@@ -51,6 +51,10 @@ int main(int argc, char * argv[])
     cl1.w = 700;
     cl1.h = 32;
     SDL_Rect cl2;
+    cl2.x = 0;
+    cl2.y = 1200;
+    cl2.w = 700;
+    cl2.h = 32;
     SDL_Rect cl3;
     SDL_Rect cl4;
 
@@ -98,7 +102,7 @@ int main(int argc, char * argv[])
     Sound *bgm = gfc_sound_load("Sound/bgm.wav", 0.5, 1);
     gfc_sound_play(bgm, -1, 0.25, 1, 1);
 
-    //gf2d_text_init("Fonts/Elfboyclassic.ttf");
+    gf2d_text_init("Fonts/Elfboyclassic.ttf");
     //windows_init(128);
 
     SDL_ShowCursor(SDL_DISABLE);
@@ -109,17 +113,26 @@ int main(int argc, char * argv[])
     health_background = gf2d_sprite_load_image("images/health_background.png");
     health = gf2d_sprite_load_image("images/health.png");
     exp = gf2d_sprite_load_image("images/experience.png");
+
+    start_ui_new(vector2d(200,300));
+    start_ui_new(vector2d(650,300));
+
     
+    door_ent_new(vector2d(50, 560));
+
     player_ent_new(vector2d(500,587));
     enemy_ent_new(vector2d(700, 580));
     enemy_ent_new(vector2d(200, 580));
     enemy_ent_new(vector2d(800, 580));
     enemy_ent_new(vector2d(900, 580));
 
-    ability_item_new(vector2d(400, 580),3);
-    ability_item_new(vector2d(50, 580),2);
+    switch_ent_new(vector2d(800, 575));
 
-    switch_ent_new(vector2d(800, 580));
+    ability_item_new(vector2d(400, 580),3);
+    ability_item_new(vector2d(100, 580),2);
+
+    
+
     collision_ent_new(vector2d(0, 610), cl1);
     tilemap = tilemap_load("levels/test.json");
     //tilemap2 = tilemap_load("levels/map2.json");
@@ -221,6 +234,9 @@ int main(int argc, char * argv[])
                 entity_manager_draw_all();
                 //UI elements last
             }
+            if (isDrawingMenu)
+                entity_manager_draw_ui();
+
             if (isDrawingMenu) {
                 gf2d_sprite_draw(
                     mouse,

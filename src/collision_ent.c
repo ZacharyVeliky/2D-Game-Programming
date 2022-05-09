@@ -8,24 +8,14 @@
 Entity* col_ent;
 SDL_Rect rect;
 
-void collision_think(Entity* self)
-{
-    Vector2D direction;
-    int mx, my;
-
-    const Uint8* keys;
-    if (!self)return;
-
-}
-
 void collision_update(Entity* self) {
 
     Vector2D direction;
     direction.x = 0 - self->position.x;
     direction.y = 0 - self->position.y;
 
-    rect.x = self->position.x - 20;
-    rect.y = self->position.y - 20;
+    rect.x = self->position.x - (float)20;
+    rect.y = self->position.y - (float)20;
     rect.w = 40;
     rect.h = 40;
     self->bounds = rect;
